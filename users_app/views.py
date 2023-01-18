@@ -202,7 +202,15 @@ class LogoutView(views.APIView):
         try:
             refresh_token = RefreshToken(request.data.get('jwt'))
             refresh_token.blacklist()
-            return Response({'message': 'Success', 'status': status.HTTP_205_RESET_CONTENT})
+            # token.delete_cookie("JWT", path="/")
+            # return Response({'message': 'Success', 'status': status.HTTP_205_RESET_CONTENT})
+            response = Response()
+            response.delete_cookie('jwt', path='/')
+            response.data = {
+                'message': 'Success',
+                'status': status.HTTP_205_RESET_CONTENT
+            }
+            return response
 
         except TokenError:
             raise('Bad token')    
