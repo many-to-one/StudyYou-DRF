@@ -1,3 +1,13 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Event
+
+
+class EventsAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'date',
+        'event',
+    )
+
+admin.site.register(Event, EventsAdmin)

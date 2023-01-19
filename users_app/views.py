@@ -94,6 +94,7 @@ class LoginApiView(views.APIView):
 
         response.set_cookie(key='jwt', value=token, httponly=True)
         response.data = {
+            'id': payload['id'],
             'jwt': token,
             'email': user.email,
             'username': user.username,
