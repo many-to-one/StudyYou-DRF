@@ -33,6 +33,9 @@ class Event(models.Model):
         on_delete=models.CASCADE,
         null=True,
     )
+    result = models.IntegerField(
+        default=0,
+    )
 
     def __str__(self) -> str:
         return str(self.date)[:16]
