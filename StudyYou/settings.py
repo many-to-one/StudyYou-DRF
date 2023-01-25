@@ -134,4 +134,5 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://192.168.0.14:19000",
+    "http://localhost:19006",
 ]

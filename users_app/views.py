@@ -192,19 +192,42 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
         )  
 
 
+# class LogoutView(views.APIView):
+
+#     def post(self, request):
+#         token = request.COOKIES.get('jwt')
+#         payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+#         user = User.objects.get(id=payload['id'])
+#         user.is_active = False
+#         user.save()
+#         try:
+#             refresh_token = RefreshToken(request.data.get('jwt'))
+#             refresh_token.blacklist()
+#             # token.delete_cookie("JWT", path="/")
+#             # return Response({'message': 'Success', 'status': status.HTTP_205_RESET_CONTENT})
+#             response = Response()
+#             response.delete_cookie('jwt', path='/')
+#             response.data = {
+#                 'message': 'Success',
+#                 'status': status.HTTP_205_RESET_CONTENT
+#             }
+#             return response
+
+#         except TokenError:
+#             raise('Bad token')   
+
+
 class LogoutView(views.APIView):
 
-    def post(self, request):
-        token = request.COOKIES.get('jwt')
-        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        user = User.objects.get(id=payload['id'])
+    def post(self, request, pk):
+        user = User.objects.get(id=pk)
         user.is_active = False
         user.save()
+        payload = {'id': user.id}
+        token = jwt.encode(payload, 'secret', algorithm='HS256')
         try:
-            refresh_token = RefreshToken(request.data.get('jwt'))
-            refresh_token.blacklist()
-            # token.delete_cookie("JWT", path="/")
-            # return Response({'message': 'Success', 'status': status.HTTP_205_RESET_CONTENT})
+            blst_token = RefreshToken(request.data.get(token))
+            blst_token.blacklist()
             response = Response()
             response.delete_cookie('jwt', path='/')
             response.data = {
@@ -212,6 +235,5 @@ class LogoutView(views.APIView):
                 'status': status.HTTP_205_RESET_CONTENT
             }
             return response
-
         except TokenError:
-            raise('Bad token')    
+            raise('Bad token')  
