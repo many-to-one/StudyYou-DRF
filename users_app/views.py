@@ -104,8 +104,10 @@ class LoginApiView(views.APIView):
 
 class UserView(views.APIView):
 
-    def get(self, request):
-        token = request.COOKIES.get('jwt')
+    def get(self, request, pk):
+        user = User.objects.get(id=pk)
+        payload = {'id': user.id}
+        token = jwt.encode(payload, 'secret', algorithm='HS256')
 
         if not token:
             raise AuthenticationFailed('Unauthenticated!')
@@ -117,7 +119,15 @@ class UserView(views.APIView):
 
         user = User.objects.filter(id=payload['id']).first()
         serializer = UserSerializer(user)
-        return Response(serializer.data)
+        response = Response()
+        response.data = {
+            'message': 'Success',
+            'status': status.HTTP_200_OK,
+            'data': serializer.data,
+            'token': token,
+        }
+        return response
+        # return Response(serializer.data)
 
 
 class RequestPasswordResetEmail(generics.GenericAPIView):
