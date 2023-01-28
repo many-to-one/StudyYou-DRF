@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, render
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -66,7 +67,13 @@ def createEvent(request, pk):
     )
     print(request.user)
     serializer = EventSerializer(event, many=False)
-    return Response(serializer.data)    
+    response = Response()
+    response.data = {
+        'message': 'Success',
+        'status': status.HTTP_200_OK,
+        'data': serializer.data,
+    }
+    return response  
 
 @api_view(['PUT'])
 def updateEvent(request, ev_pk, user_pk):
