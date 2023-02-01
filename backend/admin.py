@@ -19,7 +19,8 @@ class HoursResultAdmin(admin.ModelAdmin):
         'visits',
         'publications',
         'films',
-        )    
+        )   
+        
 
 admin.site.register(Event, EventsAdmin)
 admin.site.register(HoursResult, HoursResultAdmin)
