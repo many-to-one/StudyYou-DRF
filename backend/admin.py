@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Event, HoursResult, Months
+from .models import Event, HoursResult, Months, EventsHistory
 
 
 class EventsAdmin(admin.ModelAdmin):
@@ -25,3 +25,4 @@ class HoursResultAdmin(admin.ModelAdmin):
 admin.site.register(Event, EventsAdmin)
 admin.site.register(HoursResult, HoursResultAdmin)
 admin.site.register(Months)
+admin.site.register(EventsHistory)

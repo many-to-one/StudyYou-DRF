@@ -128,6 +128,7 @@ def getRecordedMonthResults(request, user_pk):
     month_result = Months.objects.create()
     month_result.save()
     events = Event.objects.filter(user__id=user_pk)
+
     for ev in events:
         eventsHistory = EventsHistory.objects.create(month_id=month_result.id)
         eventsHistory.date = ev.date
@@ -166,7 +167,10 @@ def deleteMonthResult(request, month_pk, user_pk):
         )
     events.delete()
     history.delete()
-    return Response('Events were deleted')
+    return Response(
+        'Events were deleted',
+        status=status.HTTP_200_OK,
+        )
     
 
 @api_view(['GET'])
