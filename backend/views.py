@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 from users_app.models import User
-from .serializers import EventSerializer, ImageSerializer, MonthsSerializer
+from .serializers import EventSerializer, ImageSerializer, MonthsSerializer, EventsHistorySerializer
 from .models import Event, EventsHistory, HoursResult, Image, Months
 from datetime import datetime
 
@@ -49,7 +49,7 @@ def getEvent(request, ev_pk, user_pk):
 @api_view(['GET'])
 def getEventHistory(request, user_pk):
     event = EventsHistory.objects.filter(user=user_pk)
-    serializer = EventSerializer(event, many=True)
+    serializer = EventsHistorySerializer(event, many=True)
     return Response(serializer.data)    
 
 @api_view(['POST'])
@@ -153,7 +153,10 @@ def getRecordedMonthResults(request, user_pk):
         month_result.user = ev.user
     month_result.save()
     serializer = EventSerializer(month_result, many=False)
-    return Response(serializer.data) 
+    return Response(
+        serializer.data,
+        month_result.date
+        ) 
 
 @api_view(['DELETE'])
 def deleteMonthResult(request, month_pk, user_pk):
@@ -177,6 +180,8 @@ def deleteMonthResult(request, month_pk, user_pk):
 def getMonthsResults(request, user_pk):
     results = Months.objects.filter(user__id=user_pk)
     serializer = MonthsSerializer(results, many=True)
+    # results = EventsHistory.objects.filter(user__id=user_pk)
+    # serializer = EventsHistorySerializer(results, many=True)
     return Response(serializer.data)
 
 
