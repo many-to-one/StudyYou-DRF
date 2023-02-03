@@ -155,7 +155,7 @@ def getRecordedMonthResults(request, user_pk):
     serializer = EventSerializer(month_result, many=False)
     return Response(
         serializer.data,
-        month_result.date
+        # month_result.date
         ) 
 
 @api_view(['DELETE'])

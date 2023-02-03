@@ -12,30 +12,37 @@ class Event(models.Model):
     )
     hours = models.IntegerField(
         default=0,
+        null=True,
     )
     minutes = models.IntegerField(
         default=0,
+        null=True,
     )
     visits = models.IntegerField(
         default=0,
+        null=True,
     )
     publications = models.IntegerField(
         default=0,
+        null=True,
     )
     films = models.IntegerField(
         default=0,
+        null=True,
     )
     studies = models.IntegerField(
         default=0,
+        null=True,
     )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         null=True,
     )
-    result = models.IntegerField(
-        default=0,
-    )
+    # result = models.IntegerField(
+    #     default=0,
+    #     null=True,
+    # )
 
     def __str__(self) -> str:
         return str(self.date)[:16]
