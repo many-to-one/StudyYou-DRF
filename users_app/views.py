@@ -251,7 +251,7 @@ class LogoutView(views.APIView):
 
 from .forms import SetPasswordForm
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 def password_change(request, pk):
     user = User.objects.get(id=pk)
@@ -260,9 +260,14 @@ def password_change(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, "Your password has been changed")
+            return redirect('http://127.0.0.1:8000/users/success/')
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
 
     form = SetPasswordForm(user)
     return render(request, 'password_reset_confirm.html', {'form': form})
+
+
+def success(request):
+    return render(request, 'success.html')
