@@ -145,7 +145,7 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
 
             current_site = "http://localhost:3000" # get_current_site(request=request).domain
             email_body = 'Hello, \n Use link below to reset your password  \n' + \
-                "http://localhost:3000/password-reset-complete/" # absurl+"?redirect_url="+redirect_url
+                "http://127.0.0.1:8000/users/mapp/password-reset-complete/" # absurl+"?redirect_url="+redirect_url
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Reset your passsword'}
             Util.send_email(data)
@@ -181,7 +181,7 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
             )
         except DjangoUnicodeDecodeError():
             if not PasswordResetTokenGenerator().check_token(user):
-                return Response('The token is not valid, please request a new one')   
+                return Response('The user is not valid, please request a new one')   
 
 
 class SetNewPasswordAPIView(generics.GenericAPIView):
@@ -247,3 +247,22 @@ class LogoutView(views.APIView):
             return response
         except TokenError:
             raise('Bad token')  
+
+
+from .forms import SetPasswordForm
+from django.contrib import messages
+from django.shortcuts import render
+
+def password_change(request):
+    user = request.user
+    if request.method == 'POST':
+        form = SetPasswordForm(user, request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your password has been changed")
+        else:
+            for error in list(form.errors.values()):
+                messages.error(request, error)
+
+    form = SetPasswordForm(user)
+    return render(request, 'password_reset_confirm.html', {'form': form})

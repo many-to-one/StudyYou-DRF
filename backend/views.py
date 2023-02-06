@@ -57,7 +57,7 @@ def createEvent(request, pk):
     new_user = User.objects.get(id=pk)
     data = request.data
     event = Event.objects.create(
-        event=data['event'],
+        event=data['event'][5:7],
         hours=data['hours'],
         minutes=data['minutes'],
         visits=data['visits'],
@@ -102,7 +102,9 @@ def deleteEvent(request, ev_pk, user_pk):
 
 @api_view(['DELETE'])
 def deleteAll(request, user_pk):
-    events = Event.objects.filter(user__id=user_pk)
+    events = Event.objects.filter(
+        user__id=user_pk,
+    )
     events.delete()
     return Response('Events were deleted')
 
@@ -111,7 +113,7 @@ def getResults(request, user_pk):
     events = Event.objects.filter(user__id=user_pk)
     result = HoursResult.objects.get(id=1)  
     for h in events:
-        result.date = 'Result for now' # result.date = month_list_UA[str(h.date)[5:7]]   
+        result.date = str(h.date)[5:7] # result.date = month_list_UA[str(h.date)[5:7]]   
         result.hours += h.hours
         result.minutes += h.minutes
         if result.minutes >= 60:

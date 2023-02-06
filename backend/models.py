@@ -5,7 +5,9 @@ from users_app.models import User
 
 
 class Event(models.Model):
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(
+        auto_now_add=True
+    )
     event = models.TextField(
         null=True,
         max_length=500,
