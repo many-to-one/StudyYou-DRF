@@ -145,7 +145,7 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
 
             current_site = "http://localhost:3000" # get_current_site(request=request).domain
             email_body = 'Hello, \n Use link below to reset your password  \n' + \
-                "http://127.0.0.1:8000/users/mapp/password-reset-complete/" # absurl+"?redirect_url="+redirect_url
+                f"http://127.0.0.1:8000/users/mapp/password-reset-complete/{user.id}/" # absurl+"?redirect_url="+redirect_url
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Reset your passsword'}
             Util.send_email(data)
@@ -253,8 +253,8 @@ from .forms import SetPasswordForm
 from django.contrib import messages
 from django.shortcuts import render
 
-def password_change(request):
-    user = request.user
+def password_change(request, pk):
+    user = User.objects.get(id=pk)
     if request.method == 'POST':
         form = SetPasswordForm(user, request.POST)
         if form.is_valid():

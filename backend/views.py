@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 from users_app.models import User
-from .serializers import EventSerializer, ImageSerializer, MonthsSerializer, EventsHistorySerializer
+from .serializers import EventSerializer, ImageSerializer, MonthsSerializer, EventsHistorySerializer, ResultSerializer
 from .models import Event, EventsHistory, HoursResult, Image, Months
 from datetime import datetime
 
@@ -57,7 +57,8 @@ def createEvent(request, pk):
     new_user = User.objects.get(id=pk)
     data = request.data
     event = Event.objects.create(
-        event=data['event'][5:7],
+        # date=data['date'][5:7],
+        event=data['event'],
         hours=data['hours'],
         minutes=data['minutes'],
         visits=data['visits'],
@@ -86,8 +87,17 @@ def updateEvent(request, ev_pk, user_pk):
 
     if serializer.is_valid():
         serializer.save()
+    response = Response()
+    response.data = {
+                'data': serializer.data,
+                'status': status.HTTP_205_RESET_CONTENT
+            }
+    return response
 
-    return Response(serializer.data)
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK,
+    )
 
 @api_view(['DELETE'])
 def deleteEvent(request, ev_pk, user_pk):
@@ -111,6 +121,8 @@ def deleteAll(request, user_pk):
 @api_view(['GET'])
 def getResults(request, user_pk):
     events = Event.objects.filter(user__id=user_pk)
+    # result = HoursResult.objects.create() 
+    # result.save()
     result = HoursResult.objects.get(id=1)  
     for h in events:
         result.date = str(h.date)[5:7] # result.date = month_list_UA[str(h.date)[5:7]]   
@@ -122,8 +134,12 @@ def getResults(request, user_pk):
         result.visits += h.visits
         result.publications += h.publications
         result.films += h.films 
-    serializer = EventSerializer(result, many=False)
-    return Response(serializer.data)
+    # result.save()
+    serializer = ResultSerializer(result, many=False)
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK,
+    )
 
 @api_view(['GET'])
 def getRecordedMonthResults(request, user_pk):
@@ -154,7 +170,8 @@ def getRecordedMonthResults(request, user_pk):
         month_result.films += ev.films
         month_result.user = ev.user
     month_result.save()
-    serializer = EventSerializer(month_result, many=False)
+    events.delete()
+    serializer = MonthsSerializer(month_result, many=False)
     return Response(
         serializer.data,
         # month_result.date

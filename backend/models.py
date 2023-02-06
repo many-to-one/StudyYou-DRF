@@ -9,7 +9,7 @@ class Event(models.Model):
         auto_now_add=True
     )
     event = models.TextField(
-        null=True,
+        # null=True,
         max_length=500,
     )
     hours = models.IntegerField(
@@ -109,6 +109,11 @@ class HoursResult(models.Model):
     films = models.IntegerField(
         default=0,
     )
+    # user = models.ForeignKey(
+    #     User,
+    #     on_delete=models.CASCADE,
+    #     null=True,
+    # )
 
     def __str__(self) -> str:
         return str(self.hours)
