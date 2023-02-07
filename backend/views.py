@@ -84,12 +84,14 @@ def updateEvent(request, ev_pk, user_pk):
         user__id=user_pk,
         )
     serializer = EventSerializer(instance=event, data=data)
-
     if serializer.is_valid():
         serializer.save()
+    evento = Event.objects.get(id=ev_pk)
+    serializero = EventSerializer(evento, many=False)
     response = Response()
     response.data = {
                 'data': serializer.data,
+                'evento': serializero.data,
                 'status': status.HTTP_205_RESET_CONTENT
             }
     return response
