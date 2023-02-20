@@ -13,4 +13,5 @@ urlpatterns = [
     path('mapp/password-reset-complete/<pk>/', password_change, name='password_change'),
     path('success/', success, name='success'),
     path('user/<pk>/', UserView.as_view(), name='user'),
+    path('users/', allUsers, name='users'),
 ]

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Event, Image, Months, EventsHistory, HoursResult
+from .models import Calendar, Event, Image, Months, EventsHistory, HoursResult
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -42,4 +42,11 @@ class ImageSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Image
+        fields = "__all__"
+
+
+class CalendarSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Calendar
         fields = "__all__"

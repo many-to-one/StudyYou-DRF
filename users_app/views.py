@@ -14,6 +14,7 @@ from django.utils.encoding import smart_str, smart_bytes, DjangoUnicodeDecodeErr
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode 
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from rest_framework.decorators import api_view
 
 
 
@@ -127,7 +128,32 @@ class UserView(views.APIView):
             'token': token,
         }
         return response
-        # return Response(serializer.data)
+
+@api_view(['GET'])
+def allUsers(request):
+    users = User.objects.filter(helper=True)
+    # data = request.data
+    serializer = UserSerializer(users, many=True)
+    response = Response()
+    response.data = {
+        'message': 'Success',
+        'status': status.HTTP_200_OK,
+        'data': serializer.data,
+    }
+    return response
+
+# class AllUsers(views.APIView):
+
+#     def get(self, request):
+#         users = User.objects.all()
+#         serializer = UserSerializer(users)
+#         response = Response()
+#         response.data = {
+#             'message': 'Success',
+#             'status': status.HTTP_200_OK,
+#             'data': serializer.data,
+#         }
+#         return response
 
 
 class RequestPasswordResetEmail(generics.GenericAPIView):

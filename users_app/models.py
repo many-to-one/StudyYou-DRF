@@ -62,6 +62,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
+    helper = models.BooleanField(
+        default=False
+        )
     is_verified = models.BooleanField(
         default=False
         )

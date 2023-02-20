@@ -5,8 +5,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 from users_app.models import User
-from .serializers import EventSerializer, ImageSerializer, MonthsSerializer, EventsHistorySerializer, ResultSerializer
-from .models import Event, EventsHistory, HoursResult, Image, Months
+from .serializers import CalendarSerializer, EventSerializer, ImageSerializer, MonthsSerializer, EventsHistorySerializer, ResultSerializer
+from .models import Calendar, Event, EventsHistory, HoursResult, Image, Months
 from datetime import datetime
 
 
@@ -218,3 +218,33 @@ def getImage(request, pk):
     img = Image.objects.get(id=pk)
     serializer = ImageSerializer(img, many=False)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+def setCalendarDate(request, pk):
+    user = User.objects.get(id=pk)
+    data = request.data
+    calendar = Calendar.objects.create(
+        date = data
+    )
+    serializer = CalendarSerializer(calendar, many=False)
+    response = Response()
+    response.data = {
+        'message': 'Success',
+        'status': status.HTTP_200_OK,
+        'data': serializer.data,
+    }
+    return response 
+
+
+@api_view(['GET'])
+def getAllCalendarDates(request):
+    calendars = Calendar.objects.all()
+    serializer = CalendarSerializer(calendars, many=True)
+    response = Response()
+    response.data = {
+        'message': 'Success',
+        'status': status.HTTP_200_OK,
+        'data': serializer.data,
+    }
+    return response
