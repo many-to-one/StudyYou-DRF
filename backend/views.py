@@ -225,7 +225,9 @@ def setCalendarDate(request, pk):
     user = User.objects.get(id=pk)
     data = request.data
     calendar = Calendar.objects.create(
-        date = data
+        date = data['date'],
+        action = data['action'],
+        user = user,
     )
     serializer = CalendarSerializer(calendar, many=False)
     response = Response()

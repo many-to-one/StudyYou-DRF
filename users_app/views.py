@@ -129,31 +129,16 @@ class UserView(views.APIView):
         }
         return response
 
-@api_view(['GET'])
-def allUsers(request):
-    users = User.objects.filter(helper=True)
-    # data = request.data
-    serializer = UserSerializer(users, many=True)
-    response = Response()
-    response.data = {
-        'message': 'Success',
-        'status': status.HTTP_200_OK,
-        'data': serializer.data,
-    }
-    return response
 
-# class AllUsers(views.APIView):
+class AllUsers(views.APIView):
 
-#     def get(self, request):
-#         users = User.objects.all()
-#         serializer = UserSerializer(users)
-#         response = Response()
-#         response.data = {
-#             'message': 'Success',
-#             'status': status.HTTP_200_OK,
-#             'data': serializer.data,
-#         }
-#         return response
+    def get(self, request):
+        users = User.objects.filter(helper=True)
+        serializer = UserSerializer(users, many=True)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
 
 
 class RequestPasswordResetEmail(generics.GenericAPIView):
