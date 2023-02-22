@@ -230,13 +230,10 @@ def setCalendarDate(request, pk):
         user = user,
     )
     serializer = CalendarSerializer(calendar, many=False)
-    response = Response()
-    response.data = {
-        'message': 'Success',
-        'status': status.HTTP_200_OK,
-        'data': serializer.data,
-    }
-    return response 
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK,
+        )  
 
 
 @api_view(['GET'])
