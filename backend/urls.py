@@ -17,4 +17,6 @@ urlpatterns = [
     path('images/<str:pk>', getImage, name='image'),
     path('calendar/<str:pk>/', setCalendarDate, name='calendar'),
     path('get_calendar/', getAllCalendarDates, name='get_calendars'),
+    path('get_microphones/<str:date>/', getMicrophoneDatesByDate, name='get_microphones'),
+    path('delete_microphone/<str:pk>/<str:date>/', deleteMicrophone, name='delete_microphone'),
 ]

@@ -250,3 +250,26 @@ def getAllCalendarDates(request):
         'data': serializer.data,
     }
     return response
+
+
+@api_view(['GET'])
+def getMicrophoneDatesByDate(request, date):
+    calendars = Calendar.objects.filter(date=date)
+    serializer = CalendarSerializer(calendars, many=True)
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK,
+        ) 
+
+
+@api_view(['DELETE'])
+def deleteMicrophone(request, pk, date):
+    calendars = Calendar.objects.get(
+        user=pk,
+        date=date
+        )
+    calendars.delete()
+    return Response(
+        'Microphone was deleted',
+        status=status.HTTP_200_OK,
+        )         
