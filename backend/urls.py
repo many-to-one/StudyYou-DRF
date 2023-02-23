@@ -15,8 +15,8 @@ urlpatterns = [
     path('month/delete/<str:month_pk>/<str:user_pk>/', deleteMonthResult, name='delete_month_results'),
     path('images/', getImages, name='images'),
     path('images/<str:pk>', getImage, name='image'),
-    path('calendar/<str:pk>/', setCalendarDate, name='calendar'),
+    path('set_calendar/<str:pk>/', setCalendar, name='set_calendar'),
     path('get_calendar/', getAllCalendarDates, name='get_calendars'),
-    path('get_microphones/<str:date>/', getMicrophoneDatesByDate, name='get_microphones'),
-    path('delete_microphone/<str:pk>/<str:date>/', deleteMicrophone, name='delete_microphone'),
+    path('get_calendar_date/', getCalendarDatesByDate, name='get_calendar_date'),
+    path('delete_calendar/<str:pk>/', deleteCalendar, name='delete_calendar'),
 ]

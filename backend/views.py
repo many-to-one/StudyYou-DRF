@@ -220,8 +220,24 @@ def getImage(request, pk):
     return Response(serializer.data)
 
 
+@api_view(['GET'])
+def getAllCalendarDates(request):
+    calendars = Calendar.objects.all()
+    serializer = CalendarSerializer(
+        calendars, 
+        many=True,
+        )
+    response = Response()
+    response.data = {
+        'message': 'Success',
+        'status': status.HTTP_200_OK,
+        'data': serializer.data,
+    }
+    return response    
+
+
 @api_view(['POST'])
-def setCalendarDate(request, pk):
+def setCalendar(request, pk):
     user = User.objects.get(id=pk)
     data = request.data
     calendar = Calendar.objects.create(
@@ -236,23 +252,17 @@ def setCalendarDate(request, pk):
         )  
 
 
-@api_view(['GET'])
-def getAllCalendarDates(request):
-    calendars = Calendar.objects.all()
-    serializer = CalendarSerializer(calendars, many=True)
-    response = Response()
-    response.data = {
-        'message': 'Success',
-        'status': status.HTTP_200_OK,
-        'data': serializer.data,
-    }
-    return response
-
-
-@api_view(['GET'])
-def getMicrophoneDatesByDate(request, date):
-    calendars = Calendar.objects.filter(date=date)
-    serializer = CalendarSerializer(calendars, many=True)
+@api_view(['POST'])
+def getCalendarDatesByDate(request):
+    data = request.data
+    calendars = Calendar.objects.filter(
+        date=data['date'],
+        action=data['action']
+        )
+    serializer = CalendarSerializer(
+        calendars, 
+        many=True,
+        )
     return Response(
         serializer.data,
         status=status.HTTP_200_OK,
@@ -260,13 +270,13 @@ def getMicrophoneDatesByDate(request, date):
 
 
 @api_view(['DELETE'])
-def deleteMicrophone(request, pk, date):
+def deleteCalendar(request, pk):
     calendars = Calendar.objects.get(
-        user=pk,
-        date=date
+        id=pk
         )
     calendars.delete()
     return Response(
         'Microphone was deleted',
         status=status.HTTP_200_OK,
-        )         
+        )     
+             
