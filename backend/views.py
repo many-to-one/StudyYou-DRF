@@ -279,4 +279,19 @@ def deleteCalendar(request, pk):
         'Microphone was deleted',
         status=status.HTTP_200_OK,
         )     
-             
+
+
+@api_view(['GET'])
+def getCalendarDatesByUser(request, pk):
+    user = User.objects.get(id=pk)
+    calendars = Calendar.objects.filter(
+        user=user,
+        )
+    serializer = CalendarSerializer(
+        calendars, 
+        many=True,
+        )
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK,
+        ) 

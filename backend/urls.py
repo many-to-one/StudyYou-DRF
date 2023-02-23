@@ -19,4 +19,5 @@ urlpatterns = [
     path('get_calendar/', getAllCalendarDates, name='get_calendars'),
     path('get_calendar_date/', getCalendarDatesByDate, name='get_calendar_date'),
     path('delete_calendar/<str:pk>/', deleteCalendar, name='delete_calendar'),
+    path('get_calendar_user/<str:pk>/', getCalendarDatesByUser, name='get_calendar_user'),
 ]
