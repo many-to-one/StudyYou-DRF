@@ -1,12 +1,16 @@
+# from http import client
+from django.urls import reverse
 from django.utils import timezone
-from django.test import TestCase
+from django.test import Client, TestCase
 from ..models import *
+from ..serializers import *
+from rest_framework import status
 from users_app.models import User
 
 
 class EventTest(TestCase):
     def setUp(self):
-        Event.objects.create(
+        self.eve = Event.objects.create(
             date = timezone.now(),
             event='test-event',
             hours='1',
@@ -20,20 +24,6 @@ class EventTest(TestCase):
             )
         )
 
-        Event.objects.create(
-            date = timezone.now(),
-            event='test-event2',
-            hours='2',
-            minutes='2',
-            visits='2',
-            publications='2',
-            films='2',
-            studies='2',
-            user=User.objects.create(
-                id=2,
-            )
-        )
-
     def testEvent(self):
         Event.objects.get(date=timezone.now()) 
         Event.objects.get(event='test-event')
@@ -44,6 +34,15 @@ class EventTest(TestCase):
         Event.objects.get(films='1')
         Event.objects.get(studies='1')   
         Event.objects.get(user=1)
+
+
+    def testEventsApi(self):
+        client = Client()
+        response = client.get(reverse('events', kwargs={'pk': self.eve.pk}))
+        events = Event.objects.filter(pk=self.eve.pk)
+        serializer = EventSerializer(events, many=True)
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class MonthTest(TestCase):
@@ -72,7 +71,7 @@ class MonthTest(TestCase):
 
 class EventsHistoryTest(TestCase):
     def setUp(self):
-        EventsHistory.objects.create(
+        self.ev_history=EventsHistory.objects.create(
             date = timezone.now(),
             event='test-history-event',
             hours='2',
@@ -102,6 +101,26 @@ class EventsHistoryTest(TestCase):
         EventsHistory.objects.get(user=4)
         EventsHistory.objects.get(month=1)
 
+    def testEventsHistoryApi(self):
+        client = Client()
+        response = client.get(reverse('event_history', kwargs={'user_pk': self.ev_history.pk}))
+        events = EventsHistory.objects.filter(user=self.ev_history.pk)
+        serializer = EventsHistorySerializer(events, many=True)
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-# class CalendarTest(TestCase):
-#     def setUp(self):
+
+class CalendarTest(TestCase):
+    def setUp(self):
+        Calendar.objects.create(
+            date='test-date',
+            action='test-action',
+            user=User.objects.create(
+                id=5,
+            ),
+        )
+
+    def testCalendar(self):
+        Calendar.objects.get(date='test-date')
+        Calendar.objects.get(action='test-action')
+        Calendar.objects.get(user=5)
