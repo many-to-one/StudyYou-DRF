@@ -4,7 +4,7 @@ from .views import *
 urlpatterns = [
     path('events/<str:pk>/', getEvents, name='events'),
     path('events/<str:ev_pk>/<str:user_pk>/', getEvent, name='event'),
-    path('events_history/<str:user_pk>/', getEventHistory, name='event_history'),
+    path('events_history/<str:user_pk>/', getEventHistory, name='events_history'),
     path('event/create/<str:pk>/', createEvent, name='create-event'),
     path('events/<str:ev_pk>/<str:user_pk>/update/', updateEvent, name='update-event'),
     path('events/<str:ev_pk>/<str:user_pk>/delete/', deleteEvent, name='delete-event'),
