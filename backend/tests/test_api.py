@@ -62,6 +62,37 @@ class EventsTestAPI(APITestCase):
             self.assertEqual(request_del.data, 'Event was deleted')
 
 
+    def testResultApi(self):
+            self.user=User.objects.create(id=7)
+            self.eve = Event.objects.create(
+                date = datetime.now(),
+                event='test-event',
+                hours=1,
+                minutes=30,
+                visits=1,
+                publications=1,
+                films=1,
+                studies=1,
+                user=self.user
+            )
+            self.events = Event.objects.filter(user__id=self.user.id)
+            self.result = HoursResult.objects.create(id=1)
+            for h in self.events:
+              self.result.date = str(h.date)[5:7]
+              self.result.hours += h.hours
+              self.result.minutes += h.minutes
+              if self.result.minutes >= 60:
+                  self.result.hours += 1
+                  self.result.minutes -= 60
+              self.result.visits += h.visits
+              self.result.publications += h.publications
+              self.result.films += h.films 
+            request = self.client.get(reverse('results', kwargs={'user_pk': self.user.id}))  
+            serializer = ResultSerializer(self.result, many=False)
+            self.assertEqual(request.status_code, status.HTTP_200_OK)
+            self.assertEqual(request.data, serializer.data)
+            self.assertEqual(self.result.hours, 1)
+            self.assertEqual(self.result.minutes, 30)
 
 
 
@@ -152,3 +183,61 @@ class EventsTestAPI(APITestCase):
             serializer = EventsHistorySerializer(results, many=True)
             self.assertEqual(request_get.status_code, status.HTTP_200_OK)
             self.assertEqual(request_get.data, serializer.data)
+
+
+
+    def testCalendarApi(self):
+        self.user = User.objects.create(id=7)
+        data = {
+             'date': '2023-03-02',
+             'action': 'test_action',
+             'user': self.user.id
+        }
+
+        #POST
+        request = self.client.post(reverse('set_calendar', kwargs={'pk': self.user.id}), data, format='json')
+        self.assertEqual(request.status_code, status.HTTP_200_OK)
+        self.assertEqual(Calendar.objects.get().id, 1)
+        self.assertEqual(Calendar.objects.get().action, 'test_action')
+        self.assertEqual(Calendar.objects.count(), 1)
+
+        #GET ALL
+        request_all = self.client.get(reverse('get_calendars'))
+        calendars = Calendar.objects.all()
+        serializer = CalendarSerializer(calendars, many=True)
+        self.assertEqual(request_all.status_code, status.HTTP_200_OK)
+        # self.assertEqual(request.data, serializer.data)
+        self.assertEqual(Calendar.objects.get().id, 1)
+        self.assertEqual(Calendar.objects.get().action, 'test_action')
+        self.assertEqual(Calendar.objects.count(), 1)
+
+        #GET
+        request_get = self.client.post(reverse('get_calendar_date'), data, format='json')
+        self.calendars = Calendar.objects.get(
+            date='2023-03-02',
+        )
+        serializer = CalendarSerializer(
+            calendars, 
+            many=True,
+        )
+        self.assertEqual(request_get.status_code, status.HTTP_200_OK)
+        self.assertEqual(request_get.data, serializer.data)
+        self.assertEqual(self.calendars.action, 'test_action')
+
+        #GET
+        request_by_user = self.client.get(reverse('get_calendar_user', kwargs={'pk': self.user.id}))
+        self.calendar = Calendar.objects.get(
+            date='2023-03-02',
+        )
+        serializer = CalendarSerializer(
+            calendars, 
+            many=True,
+        )
+        self.assertEqual(request_by_user.status_code, status.HTTP_200_OK)
+        self.assertEqual(request_by_user.data, serializer.data)
+        self.assertEqual(self.calendar.action, 'test_action')
+
+        #DELETE
+        request_del = self.client.delete(reverse('delete_calendar', kwargs={'pk': self.calendar.id}))
+        self.assertEqual(request_del.status_code, status.HTTP_200_OK)
+        self.assertEqual(request_del.data, 'Action was deleted')

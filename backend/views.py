@@ -276,7 +276,7 @@ def deleteCalendar(request, pk):
         )
     calendars.delete()
     return Response(
-        'Microphone was deleted',
+        'Action was deleted',
         status=status.HTTP_200_OK,
         )     
 
