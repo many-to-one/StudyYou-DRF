@@ -55,6 +55,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=True,
         db_index=True
     )
+    congregation=models.CharField(
+        max_length=250,
+        null=True,
+        db_index=True
+    )
     language=models.CharField(
         max_length=5,
         null=True,

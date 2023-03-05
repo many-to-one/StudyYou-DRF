@@ -241,10 +241,11 @@ def setCalendar(request, pk):
     user = User.objects.get(id=pk)
     data = request.data
     calendar = Calendar.objects.create(
-        date = data['date'],
-        action = data['action'],
-        user = user,
-    )
+        date=data['date'],
+        action=data['action'],
+        congregation=data['congregation'],
+        user=user,
+        )
     serializer = CalendarSerializer(calendar, many=False)
     return Response(
         serializer.data,
@@ -257,8 +258,9 @@ def getCalendarDatesByDate(request):
     data = request.data
     calendars = Calendar.objects.filter(
         date=data['date'],
-        action=data['action']
-        )
+        action=data['action'],
+        congregation=data['congregation']
+    )
     serializer = CalendarSerializer(
         calendars, 
         many=True,
@@ -268,6 +270,38 @@ def getCalendarDatesByDate(request):
         status=status.HTTP_200_OK,
         ) 
 
+@api_view(['POST'])
+def setCalendarPerson(request, pk):
+    user = User.objects.get(id=pk)
+    data = request.data
+    calendar = Calendar.objects.create(
+        date = data['date'],
+        action = data['action'],
+        person = data['person'],
+        user = user,
+        )
+    serializer = CalendarSerializer(calendar, many=False)
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK,
+        )
+
+@api_view(['POST'])
+def getCalendarDatesByPerson(request):
+    data = request.data
+    calendars = Calendar.objects.filter(
+        date=data['date'],
+        action=data['action'],
+        # person=data['person'],
+    )
+    serializer = CalendarSerializer(
+        calendars, 
+        many=True,
+        )
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK,
+        )
 
 @api_view(['DELETE'])
 def deleteCalendar(request, pk):

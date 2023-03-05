@@ -72,8 +72,12 @@ class LoginApiView(views.APIView):
     def post(self, request):
         email = request.data['email']
         password = request.data['password']
+        congregation = request.data['congregation']
 
-        user = User.objects.filter(email=email).first()
+        user = User.objects.filter(
+            email=email,
+            # congregation=congregation,
+            ).first()
         user.is_active = True
         user.save()
 
@@ -99,6 +103,7 @@ class LoginApiView(views.APIView):
             'jwt': token,
             'email': user.email,
             'username': user.username,
+            'congregation': user.congregation
         }
         return response
        
@@ -132,8 +137,8 @@ class UserView(views.APIView):
 
 class AllUsers(views.APIView):
 
-    def get(self, request):
-        users = User.objects.filter(helper=True)
+    def get(self, request, congregation):
+        users = User.objects.filter(congregation=congregation)
         serializer = UserSerializer(users, many=True)
         return Response(
             serializer.data,

@@ -20,15 +20,17 @@ class RegisterSerializer(serializers.ModelSerializer):
             'email',
             'username',
             'password',
+            'congregation',
         ]
 
     # Here we validating data from RegisterApi post
     def validate(self, attrs):
         email=attrs.get('email', '')
         username=attrs.get('username', '')
+        # congregation=attrs.get('congregation', '')
 
-        if not username.isalnum():
-            raise serializers.ValidationError('The username should contains only alphanumeric character')
+        # if not username.isalnum():
+        #     raise serializers.ValidationError('The username should contains only alphanumeric character')
 
         return attrs
 

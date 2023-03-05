@@ -26,6 +26,8 @@ class CalendarAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'date',
+        'action',
+        'person',
         'user',
     ) 
         

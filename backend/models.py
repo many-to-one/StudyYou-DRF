@@ -171,11 +171,19 @@ class Calendar(models.Model):
         max_length=200,
         null=True,
     )
+    person = models.CharField(
+        max_length=200,
+        null=True,
+    )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         null=True
-    )  
+    ) 
+    congregation = models.CharField(
+        max_length=200,
+        null=True,
+    )
 
     def __str__(self) -> str:
         return str(self.date) 
