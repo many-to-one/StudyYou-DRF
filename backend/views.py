@@ -278,6 +278,8 @@ def setCalendarPerson(request, pk):
         date = data['date'],
         action = data['action'],
         person = data['person'],
+        congregation = data['congregation'],
+        time = data['time'],
         user = user,
         )
     serializer = CalendarSerializer(calendar, many=False)
