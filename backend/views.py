@@ -10,7 +10,7 @@ from .models import Calendar, Event, EventsHistory, HoursResult, Image, Months
 from datetime import datetime
 
 
-month_list_UA = {
+ENG = {
         '01': 'January',
         '02': 'February',
         '03': 'March',
@@ -23,6 +23,51 @@ month_list_UA = {
         '10': 'October',
         '11': 'November',
         '12': 'December',
+    }
+
+PL = {
+        '01': 'styczeń',
+        '02': 'luty',
+        '03': 'marzec',
+        '04': 'kwiecień',
+        '05': 'maj',
+        '06': 'czerwiec',
+        '07': 'lipiec',
+        '08': 'sierpień',
+        '09': 'wrzesień',
+        '10': 'październik',
+        '11': 'listopad',
+        '12': 'grudzień',
+    }
+
+RU = {
+        '01': 'Январь',
+        '02': 'Февраль',
+        '03': 'Март',
+        '04': 'Апрель',
+        '05': 'Май',
+        '06': 'Июнь',
+        '07': 'Июль',
+        '08': 'Август',
+        '09': 'Сентябрь',
+        '10': 'Октябрь',
+        '11': 'Ноябрь',
+        '12': 'Декабрь',
+    }
+
+UA = {
+        '01': 'січень',
+        '02': 'лютий',
+        '03': 'березень',
+        '04': 'квітень',
+        '05': 'травень',
+        '06': 'червень',
+        '07': 'липень',
+        '08': 'серпень',
+        '09': 'вересень',
+        '10': 'жовтень',
+        '11': 'листопад',
+        '12': 'грудень',
     }
 
 @api_view(['GET'])
@@ -143,11 +188,14 @@ def getResults(request, user_pk):
         status=status.HTTP_200_OK,
     )
 
+
 @api_view(['GET'])
-def getRecordedMonthResults(request, user_pk):
+def getRecordedMonthResults(request, user_pk, lng):
     month_result = Months.objects.create()
     month_result.save()
     events = Event.objects.filter(user__id=user_pk)
+    lang = f'lng_{lng}'
+    print(lang)
 
     for ev in events:
         eventsHistory = EventsHistory.objects.create(month_id=month_result.id)
@@ -161,7 +209,14 @@ def getRecordedMonthResults(request, user_pk):
         eventsHistory.user = ev.user
         eventsHistory.save()
 
-        month_result.date = str(f'{str(ev.date)[0:4]} {month_list_UA[str(ev.date)[5:7]]}')
+        if lng == 'ENG':
+            month_result.date = str(f'{str(ev.date)[0:4]} {ENG[str(ev.date)[5:7]]}')
+        if lng == 'PL':
+            month_result.date = str(f'{str(ev.date)[0:4]} {PL[str(ev.date)[5:7]]}')
+        if lng == 'RU':
+            month_result.date = str(f'{str(ev.date)[0:4]} {RU[str(ev.date)[5:7]]}')
+        if lng == 'UA':
+            month_result.date = str(f'{str(ev.date)[0:4]} {UA[str(ev.date)[5:7]]}')
         month_result.hours += ev.hours
         month_result.minutes += ev.minutes
         if month_result.minutes >= 60:
@@ -177,7 +232,7 @@ def getRecordedMonthResults(request, user_pk):
     return Response(
         serializer.data,
         # month_result.date
-        ) 
+        )  
 
 @api_view(['DELETE'])
 def deleteMonthResult(request, month_pk, user_pk):
