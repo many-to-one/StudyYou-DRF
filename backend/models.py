@@ -47,7 +47,8 @@ class Event(models.Model):
     # )
 
     def __str__(self) -> str:
-        return str(self.date)[:16]
+        return str(self.date)[:16] 
+
 
 
 class EventsHistory(models.Model):
@@ -116,7 +117,7 @@ class HoursResult(models.Model):
     # )
 
     def __str__(self) -> str:
-        return str(self.hours)
+        return str(self.hours) or ' '
 
 
 class Months(models.Model):
@@ -191,4 +192,9 @@ class Calendar(models.Model):
 
 
     def __str__(self) -> str:
-        return str(self.date) 
+        return str(self.date)
+    
+    # def __str__(self):
+    #     if str(self.date)==None:
+    #         return "ERROR-CUSTOMER NAME IS NULL"
+    #     return str(self.date)
