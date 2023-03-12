@@ -103,7 +103,7 @@ class LoginApiView(views.APIView):
             'jwt': token,
             'email': user.email,
             'username': user.username,
-            'congregation': user.congregation
+            'congregation': user.congregation,
         }
         return response
        

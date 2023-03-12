@@ -277,7 +277,8 @@ def getImage(request, pk):
 
 @api_view(['GET'])
 def getAllCalendarDates(request):
-    calendars = Calendar.objects.all()
+    congregation='Sława'
+    calendars = Calendar.objects.filter(congregation=congregation).exclude(action='MinistryWith')
     serializer = CalendarSerializer(
         calendars, 
         many=True,
