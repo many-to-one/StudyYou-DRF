@@ -256,9 +256,31 @@ def deleteMonthResult(request, month_pk, user_pk):
 def getMonthsResults(request, user_pk):
     results = Months.objects.filter(user__id=user_pk)
     serializer = MonthsSerializer(results, many=True)
-    # results = EventsHistory.objects.filter(user__id=user_pk)
-    # serializer = EventsHistorySerializer(results, many=True)
-    return Response(serializer.data)
+    all_hours = 0
+    all_minutes = 0
+    all_visits = 0
+    all_publications = 0
+    all_films = 0
+    for i in results:
+        all_hours += i.hours
+        all_minutes += i.minutes
+        if all_minutes >= 60:
+            all_hours += 1
+            all_minutes -= 60
+        all_visits += i.visits
+        all_publications += i.publications
+        all_films += i.films
+    response = Response()
+    response.data = {
+        'status': status.HTTP_200_OK,
+        'data': serializer.data,
+        'all_hours': all_hours,
+        'all_minutes': all_minutes,
+        'all_visits': all_visits,
+        'all_publications': all_publications,
+        'all_films': all_films,
+    }
+    return response
 
 
 @api_view(['GET'])
