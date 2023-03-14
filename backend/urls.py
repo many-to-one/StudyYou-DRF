@@ -17,6 +17,7 @@ urlpatterns = [
     path('images/<str:pk>', getImage, name='image'),
     path('set_calendar/<str:pk>/', setCalendar, name='set_calendar'),
     path('set_calendar_person/<str:pk>/', setCalendarPerson, name='set_calendar_person'),
+    path('set_calendar_from_person/<str:username>/', setCalendarFromPerson, name='set_calendar_from_person'),
     path('get_calendar/', getAllCalendarDates, name='get_calendars'),
     path('get_calendar_date/', getCalendarDatesByDate, name='get_calendar_date'),
     path('get_calendar_person/', getCalendarDatesByPerson, name='get_calendar_person'),

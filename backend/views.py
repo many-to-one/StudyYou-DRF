@@ -337,7 +337,7 @@ def getCalendarDatesByDate(request):
     calendars = Calendar.objects.filter(
         date=data['date'],
         action=data['action'],
-        congregation=data['congregation']
+        congregation=data['congregation'],
     )
     serializer = CalendarSerializer(
         calendars, 
@@ -356,6 +356,25 @@ def setCalendarPerson(request, pk):
         date = data['date'],
         action = data['action'],
         person = data['person'],
+        congregation = data['congregation'],
+        time = data['time'],
+        user = user,
+        )
+    serializer = CalendarSerializer(calendar, many=False)
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK,
+        )
+
+@api_view(['POST'])
+def setCalendarFromPerson(request, username):
+    data = request.data
+    user = User.objects.get(username=username)
+    person = User.objects.get(id=data['person'])
+    calendar = Calendar.objects.create(
+        date = data['date'],
+        action = data['action'],
+        person = person,
         congregation = data['congregation'],
         time = data['time'],
         user = user,
