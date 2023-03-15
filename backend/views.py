@@ -261,6 +261,11 @@ def getMonthsResults(request, user_pk):
     all_visits = 0
     all_publications = 0
     all_films = 0
+    months = []
+    hours = []
+    visits = []
+    publications = []
+    films = []
     for i in results:
         all_hours += i.hours
         all_minutes += i.minutes
@@ -270,6 +275,12 @@ def getMonthsResults(request, user_pk):
         all_visits += i.visits
         all_publications += i.publications
         all_films += i.films
+    for j in results:
+        months.append(j.date[5:])
+        hours.append(j.hours)
+        visits.append(j.visits)
+        publications.append(j.publications)
+        films.append(j.films)
     response = Response()
     response.data = {
         'status': status.HTTP_200_OK,
@@ -279,6 +290,11 @@ def getMonthsResults(request, user_pk):
         'all_visits': all_visits,
         'all_publications': all_publications,
         'all_films': all_films,
+        'months': months,
+        'hours': hours,
+        'visits': visits,
+        'publications': publications,
+        'films': films,
     }
     return response
 
