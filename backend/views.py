@@ -364,6 +364,7 @@ def getCalendarDatesByDate(request):
         status=status.HTTP_200_OK,
         ) 
 
+
 @api_view(['POST'])
 def setCalendarPerson(request, pk):
     user = User.objects.get(id=pk)

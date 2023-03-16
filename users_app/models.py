@@ -65,6 +65,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=True,
         db_index=True
     )
+    groupe = models.CharField(
+        max_length=5,
+        null=True,
+        db_index=True
+    )
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
     helper = models.BooleanField(

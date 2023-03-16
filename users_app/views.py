@@ -146,6 +146,20 @@ class AllUsers(views.APIView):
         )
 
 
+class AllUsersByGroupe(views.APIView):
+
+    def get(self, request, congregation, groupe):
+        users = User.objects.filter(
+            congregation=congregation,
+            groupe=groupe,
+            )
+        serializer = UserSerializer(users, many=True)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
+
 class RequestPasswordResetEmail(generics.GenericAPIView):
     serializer_class = ResetPasswordEmailRequestSerializer
 
@@ -263,6 +277,26 @@ class LogoutView(views.APIView):
             return response
         except TokenError:
             raise('Bad token')  
+        
+
+class SetGroupeView(views.APIView):
+
+    def post(self, request, pk):
+        data = request.data
+        user = User.objects.get(id=pk)
+        user.groupe = data
+        user.save()
+        serializer = UserSerializer(
+            user, 
+            many = False,
+        )
+        try:
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            raise e
 
 
 from .forms import SetPasswordForm

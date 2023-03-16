@@ -189,6 +189,10 @@ class Calendar(models.Model):
         max_length=200,
         null=True,
     )
+    groupe = models.CharField(
+        max_length=5,
+        null=True,
+    )
 
 
     def __str__(self) -> str:
