@@ -339,6 +339,7 @@ def setCalendar(request, pk):
         action=data['action'],
         congregation=data['congregation'],
         groupe=data['groupe'],
+        icon=data['icon'],
         user=user,
         )
     serializer = CalendarSerializer(calendar, many=False)

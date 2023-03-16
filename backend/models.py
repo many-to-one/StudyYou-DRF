@@ -9,7 +9,7 @@ class Event(models.Model):
         auto_now_add=True
     )
     event = models.TextField(
-        # null=True,
+        null=True,
         max_length=500,
     )
     hours = models.IntegerField(
@@ -191,6 +191,10 @@ class Calendar(models.Model):
     )
     groupe = models.CharField(
         max_length=5,
+        null=True,
+    )
+    icon = models.CharField(
+        max_length=255,
         null=True,
     )
 
