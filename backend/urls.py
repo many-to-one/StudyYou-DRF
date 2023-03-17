@@ -23,4 +23,5 @@ urlpatterns = [
     path('get_calendar_person/', getCalendarDatesByPerson, name='get_calendar_person'),
     path('delete_calendar/<str:pk>/', deleteCalendar, name='delete_calendar'),
     path('get_calendar_user/<str:pk>/', getCalendarDatesByUser, name='get_calendar_user'),
+    path('set_calendar_speach/', setCalendarSpeach, name='set_calendar_speach'),
 ]

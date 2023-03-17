@@ -197,6 +197,10 @@ class Calendar(models.Model):
         max_length=255,
         null=True,
     )
+    topic = models.CharField(
+        max_length=555,
+        null=True,
+    )
 
 
     def __str__(self) -> str:
