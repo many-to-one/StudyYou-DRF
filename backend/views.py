@@ -190,7 +190,7 @@ def getResults(request, user_pk):
 
 
 @api_view(['GET'])
-def getRecordedMonthResults(request, user_pk, lng):
+def getRecordedMonthResults(request, user_pk, lng, studies):
     month_result = Months.objects.create()
     month_result.save()
     events = Event.objects.filter(user__id=user_pk)
@@ -206,6 +206,7 @@ def getRecordedMonthResults(request, user_pk, lng):
         eventsHistory.visits = ev.visits
         eventsHistory.publications = ev.publications
         eventsHistory.films = ev.films
+        eventsHistory.studies = studies
         eventsHistory.user = ev.user
         eventsHistory.save()
 
@@ -225,6 +226,7 @@ def getRecordedMonthResults(request, user_pk, lng):
         month_result.visits += ev.visits
         month_result.publications += ev.publications
         month_result.films += ev.films
+        month_result.studies = studies
         month_result.user = ev.user
     month_result.save()
     events.delete()
@@ -233,6 +235,7 @@ def getRecordedMonthResults(request, user_pk, lng):
         serializer.data,
         # month_result.date
         )  
+
 
 @api_view(['DELETE'])
 def deleteMonthResult(request, month_pk, user_pk):
@@ -255,17 +258,20 @@ def deleteMonthResult(request, month_pk, user_pk):
 @api_view(['GET'])
 def getMonthsResults(request, user_pk):
     results = Months.objects.filter(user__id=user_pk)
+    events = Event.objects.filter(user__id=user_pk)
     serializer = MonthsSerializer(results, many=True)
     all_hours = 0
     all_minutes = 0
     all_visits = 0
     all_publications = 0
     all_films = 0
+    all_studies = 0
     months = []
     hours = []
     visits = []
     publications = []
     films = []
+    studies = []
     for i in results:
         all_hours += i.hours
         all_minutes += i.minutes
@@ -275,12 +281,23 @@ def getMonthsResults(request, user_pk):
         all_visits += i.visits
         all_publications += i.publications
         all_films += i.films
-    for j in results:
-        months.append(j.date[5:])
-        hours.append(j.hours)
-        visits.append(j.visits)
-        publications.append(j.publications)
-        films.append(j.films)
+        # all_studies = i.studies[0]
+        months.append(i.date[5:])
+        hours.append(i.hours)
+        visits.append(i.visits)
+        publications.append(i.publications)
+        films.append(i.films)
+        studies.append(i.studies)
+    for j in events:
+        all_hours += j.hours
+        all_minutes += j.minutes
+        if all_minutes >= 60:
+            all_hours += 1
+            all_minutes -= 60
+        all_visits += j.visits
+        all_publications += j.publications
+        all_films += j.films
+        all_studies = j.studies
     response = Response()
     response.data = {
         'status': status.HTTP_200_OK,
@@ -290,11 +307,13 @@ def getMonthsResults(request, user_pk):
         'all_visits': all_visits,
         'all_publications': all_publications,
         'all_films': all_films,
+        'all_studies': all_studies,
         'months': months,
         'hours': hours,
         'visits': visits,
         'publications': publications,
         'films': films,
+        'studies': studies,
     }
     return response
 

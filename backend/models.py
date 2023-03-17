@@ -140,6 +140,9 @@ class Months(models.Model):
     films = models.IntegerField(
         default=0,
     )
+    studies = models.IntegerField(
+        default=0,
+    )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
