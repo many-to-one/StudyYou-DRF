@@ -7,7 +7,7 @@ class EventsAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'date',
-        'event',
+        # 'event',
     )
 
 

@@ -103,7 +103,7 @@ def createEvent(request, pk):
     data = request.data
     event = Event.objects.create(
         # date=data['date'][5:7],
-        event=data['event'],
+        # event=data['event'],
         hours=data['hours'],
         minutes=data['minutes'],
         visits=data['visits'],
@@ -126,17 +126,18 @@ def updateEvent(request, ev_pk, user_pk):
     data = request.data
     event = Event.objects.get(
         id=ev_pk,
-        user__id=user_pk,
+        # user__id=user_pk,
         )
-    serializer = EventSerializer(instance=event, data=data)
+    serializer = EventSerializer(instance=event, data=data, partial=True)
+    # serializer = EventSerializer(event, many=False)
     if serializer.is_valid():
         serializer.save()
     evento = Event.objects.get(id=ev_pk)
-    serializero = EventSerializer(evento, many=False)
+    # serializero = EventSerializer(evento, many=False)
     response = Response()
     response.data = {
                 'data': serializer.data,
-                'evento': serializero.data,
+                # 'evento': serializero.data,
                 'status': status.HTTP_205_RESET_CONTENT
             }
     return response
@@ -359,7 +360,7 @@ def setCalendar(request, pk):
         congregation=data['congregation'],
         groupe=data['groupe'],
         icon=data['icon'],
-        topic=data['topic'],
+        # topic=data['topic'],
         user=user,
         )
     username = user.username

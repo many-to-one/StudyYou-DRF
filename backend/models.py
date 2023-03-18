@@ -8,10 +8,10 @@ class Event(models.Model):
     date = models.DateTimeField(
         auto_now_add=True
     )
-    event = models.TextField(
-        null=True,
-        max_length=500,
-    )
+    # event = models.TextField(
+    #     null=True,
+    #     max_length=500,
+    # )
     hours = models.IntegerField(
         default=0,
         null=True,
