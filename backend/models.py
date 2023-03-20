@@ -213,7 +213,15 @@ class Calendar(models.Model):
     def __str__(self) -> str:
         return str(self.date)
     
-    # def __str__(self):
-    #     if str(self.date)==None:
-    #         return "ERROR-CUSTOMER NAME IS NULL"
-    #     return str(self.date)
+class PlacesStand(models.Model):
+    name = models.CharField(
+        max_length=555,
+        null=True,
+    )
+    congregation = models.CharField(
+        max_length=555,
+        null=True,
+    )
+
+    def __str__(self) -> str:
+        return str(self.id)

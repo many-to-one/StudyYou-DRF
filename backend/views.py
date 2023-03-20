@@ -5,8 +5,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 from users_app.models import User
-from .serializers import CalendarSerializer, EventSerializer, ImageSerializer, MonthsSerializer, EventsHistorySerializer, ResultSerializer
-from .models import Calendar, Event, EventsHistory, HoursResult, Image, Months
+from .serializers import CalendarSerializer, EventSerializer, ImageSerializer, MonthsSerializer, EventsHistorySerializer, PlacesStandSerializer, ResultSerializer
+from .models import Calendar, Event, EventsHistory, HoursResult, Image, Months, PlacesStand
 from datetime import datetime
 
 
@@ -509,3 +509,18 @@ def setCalendarSpeach(request):
         serializer.data,
         status=status.HTTP_200_OK,
         )
+
+
+@api_view(['POST'])
+def setPlacesStand(request):
+    data = request.data
+    place = PlacesStand.objects.create(
+        name=data['name'],
+        congregation=data['congregation']
+    )
+    serializer = PlacesStandSerializer(place, many=False)
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK,
+        )
+    
