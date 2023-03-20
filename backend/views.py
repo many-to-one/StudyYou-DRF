@@ -354,6 +354,8 @@ def getAllCalendarDates(request):
 def setCalendar(request, pk):
     user = User.objects.get(id=pk)
     data = request.data
+    user.action = data['action']
+    user.save()
     calendar = Calendar.objects.create(
         date=data['date'],
         action=data['action'],
@@ -431,6 +433,8 @@ def setCalendarFromPerson(request, username):
 def setCalendarStand(request, username):
     data = request.data
     user = User.objects.get(username=username)
+    user.action = data['action'],
+    user.save()
     calendar = Calendar.objects.create(
         date = data['date'],
         action = data['action'],
@@ -511,16 +515,44 @@ def setCalendarSpeach(request):
         )
 
 
-@api_view(['POST'])
-def setPlacesStand(request):
-    data = request.data
-    place = PlacesStand.objects.create(
-        name=data['name'],
-        congregation=data['congregation']
-    )
-    serializer = PlacesStandSerializer(place, many=False)
-    return Response(
-        serializer.data,
-        status=status.HTTP_200_OK,
+@api_view(['POST', 'GET', 'DELETE'])
+def setPlacesStand(request, congregation):
+    if request.method == "POST":
+        data = request.data
+        place = PlacesStand.objects.create(
+            name=data['name'],
+            congregation=congregation
         )
-    
+        serializer = PlacesStandSerializer(place, many=False)
+        response = Response()
+        response.data = {
+            'message': 'Success',
+            'status': status.HTTP_200_OK,
+            'data': serializer.data,
+        }
+        return response  
+    elif request.method == "GET":
+        places = PlacesStand.objects.filter(
+            congregation=congregation,
+        )
+        serializer = PlacesStandSerializer(places, many=True)
+        response = Response()
+        response.data = {
+            'message': 'Success',
+            'status': status.HTTP_200_OK,
+            'data': serializer.data,
+        }
+        return response
+    elif request.method == "DELETE":
+        data = request.data
+        place = PlacesStand.objects.filter(
+            name=data['name'],
+            congregation=congregation,
+        )
+        place.delete()
+        response = Response()
+        response.data = {
+            'message': 'Deleted successfully',
+            'status': status.HTTP_404_NOT_FOUND,
+        }
+        return response

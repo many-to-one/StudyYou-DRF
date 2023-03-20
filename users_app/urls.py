@@ -14,6 +14,7 @@ urlpatterns = [
     path('success/', success, name='success'),
     path('user/<pk>/', UserView.as_view(), name='user'),
     path('users/<congregation>/', AllUsers.as_view(), name='users'),
+    path('users_by_action/<congregation>/<action>/', AllUsersBy.as_view(), name='users_by_action'),
     path('users_by_groupe/<congregation>/<groupe>/', AllUsersByGroupe.as_view(), name='users_by_groupe'),
     path('set_user_groupe/<pk>/', SetGroupeView.as_view(), name='set_user_groupe'),
 ]

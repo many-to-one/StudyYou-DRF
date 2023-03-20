@@ -144,6 +144,17 @@ class AllUsers(views.APIView):
             serializer.data,
             status=status.HTTP_200_OK,
         )
+    
+
+class AllUsersBy(views.APIView):
+
+    def get(self, request, congregation, action):
+        users = User.objects.filter(congregation=congregation).exclude(action=action)
+        serializer = UserSerializer(users, many=True)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
 
 
 class AllUsersByGroupe(views.APIView):

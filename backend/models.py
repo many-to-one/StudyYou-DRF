@@ -185,11 +185,11 @@ class Calendar(models.Model):
         null=True
     ) 
     congregation = models.CharField(
-        max_length=200,
+        max_length=30,
         null=True,
     )
     time = models.CharField(
-        max_length=200,
+        max_length=30,
         null=True,
     )
     groupe = models.CharField(
@@ -197,15 +197,15 @@ class Calendar(models.Model):
         null=True,
     )
     icon = models.CharField(
-        max_length=255,
+        max_length=30,
         null=True,
     )
     topic = models.CharField(
-        max_length=555,
+        max_length=26,
         null=True,
     )
     place = models.CharField(
-        max_length=555,
+        max_length=26,
         null=True,
     )
 
@@ -215,11 +215,11 @@ class Calendar(models.Model):
     
 class PlacesStand(models.Model):
     name = models.CharField(
-        max_length=555,
+        max_length=26,
         null=True,
     )
     congregation = models.CharField(
-        max_length=555,
+        max_length=50,
         null=True,
     )
 
