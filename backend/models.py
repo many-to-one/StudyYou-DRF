@@ -204,6 +204,10 @@ class Calendar(models.Model):
         max_length=555,
         null=True,
     )
+    place = models.CharField(
+        max_length=555,
+        null=True,
+    )
 
 
     def __str__(self) -> str:

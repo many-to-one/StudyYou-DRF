@@ -428,6 +428,28 @@ def setCalendarFromPerson(request, username):
         )
 
 @api_view(['POST'])
+def setCalendarStand(request, username):
+    data = request.data
+    user = User.objects.get(username=username)
+    calendar = Calendar.objects.create(
+        date = data['date'],
+        action = data['action'],
+        person = data['person'],
+        place = data['place'],
+        icon = data['icon'],
+        congregation = data['congregation'],
+        time = data['time'],
+        user = user,
+        )
+    stand = calendar.action[6:]
+    serializer = CalendarSerializer(calendar, many=False) 
+    return Response(
+        serializer.data,
+        stand=stand,
+        status=status.HTTP_200_OK,
+        )
+
+@api_view(['POST'])
 def getCalendarDatesByPerson(request):
     data = request.data
     calendars = Calendar.objects.filter(
