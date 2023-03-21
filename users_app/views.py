@@ -146,15 +146,28 @@ class AllUsers(views.APIView):
         )
     
 
-class AllUsersBy(views.APIView):
+class AllUsersByService(views.APIView):
 
     def get(self, request, congregation, action):
-        users = User.objects.filter(congregation=congregation).exclude(action=action)
-        serializer = UserSerializer(users, many=True)
-        return Response(
-            serializer.data,
-            status=status.HTTP_200_OK,
-        )
+        users = User.objects.filter(
+            congregation=congregation
+            )
+        for u in users:
+            if u.action[:-2] == f'{action}-2': 
+                u.available == False
+
+        available_users = User.objects.filter(
+            congregation=congregation,
+            available=True,
+        ) 
+        serializer = UserSerializer(available_users, many=True)
+        response = Response()
+        response.data = {
+            'message': 'Success',
+            'status': status.HTTP_200_OK,
+            'data': serializer.data,
+        }
+        return response
 
 
 class AllUsersByGroupe(views.APIView):

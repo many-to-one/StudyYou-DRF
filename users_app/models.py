@@ -70,18 +70,21 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=True,
         db_index=True
     )
-    duty = models.IntegerField(
-        default=0,
+    available = models.BooleanField(
+        default=True
+    )
+    duty = models.CharField(
+        max_length=100,
         null=True,
         db_index=True
     )
-    microphones = models.IntegerField(
-        default=0,
+    microphones = models.CharField(
+        max_length=100,
         null=True,
         db_index=True
     )
-    music = models.IntegerField(
-        default=0,
+    music = models.CharField(
+        max_length=100,
         null=True,
         db_index=True
     )
