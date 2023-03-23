@@ -14,7 +14,10 @@ urlpatterns = [
     path('success/', success, name='success'),
     path('user/<pk>/', UserView.as_view(), name='user'),
     path('users/<congregation>/', AllUsers.as_view(), name='users'),
-    path('users_by_service/<congregation>/<action>/', AllUsersByService.as_view(), name='users_by_service'),
+    path('users_by_service/<congregation>/', AllUsersByService.as_view(), name='users_by_service'),
+    path('users_by_leader/<congregation>/', AllUsersByLeader.as_view(), name='users_by_leader'),
+    path('users_by_helper/<congregation>/', AllUsersByHelper.as_view(), name='users_by_helper'),
+    path('users_by_ministry/<congregation>/', AllUsersByMinistry.as_view(), name='users_by_ministry'),
     path('users_by_groupe/<congregation>/<groupe>/', AllUsersByGroupe.as_view(), name='users_by_groupe'),
     path('set_user_groupe/<pk>/', SetGroupeView.as_view(), name='set_user_groupe'),
 ]

@@ -514,6 +514,25 @@ def setCalendarSpeach(request):
         )
 
 
+@api_view(['POST'])
+def setCalendarSpeachFromList(request, pk):
+    data = request.data
+    user = User.objects.get(id=pk)
+    calendar = Calendar.objects.create(
+        date=data['date'],
+        action=data['action'],
+        topic=data['topic'],
+        congregation=data['congregation'],
+        icon=data['icon'],
+        user=user
+        )
+    serializer = CalendarSerializer(calendar, many=False)
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK,
+        )
+
+
 @api_view(['POST', 'GET', 'DELETE'])
 def setPlacesStand(request, congregation):
     if request.method == "POST":

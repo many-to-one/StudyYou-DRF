@@ -73,27 +73,21 @@ class User(AbstractBaseUser, PermissionsMixin):
     available = models.BooleanField(
         default=True
     )
-    duty = models.CharField(
-        max_length=100,
-        null=True,
-        db_index=True
+    service = models.BooleanField(
+        default=False
     )
-    microphones = models.CharField(
-        max_length=100,
-        null=True,
-        db_index=True
+    leader = models.BooleanField(
+        default=False
     )
-    music = models.CharField(
-        max_length=100,
-        null=True,
-        db_index=True
-    )
-    
-    created_at=models.DateTimeField(auto_now_add=True)
-    updated_at=models.DateTimeField(auto_now=True)
     helper = models.BooleanField(
         default=False
         )
+    ministry_event = models.BooleanField(
+        default=False
+        )
+    
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
     is_verified = models.BooleanField(
         default=False
         )
