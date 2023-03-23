@@ -201,7 +201,6 @@ def getRecordedMonthResults(request, user_pk, lng, studies):
     for ev in events:
         eventsHistory = EventsHistory.objects.create(month_id=month_result.id)
         eventsHistory.date = ev.date
-        eventsHistory.event = ev.event
         eventsHistory.hours = ev.hours
         eventsHistory.minutes = ev.minutes
         eventsHistory.visits = ev.visits
