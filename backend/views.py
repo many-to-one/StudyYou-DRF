@@ -368,7 +368,7 @@ def setCalendar(request, pk):
     serializer = CalendarSerializer(calendar, many=False)
     return Response(
         serializer.data,
-        username,
+        # username,
         status=status.HTTP_200_OK,
         )  
 
