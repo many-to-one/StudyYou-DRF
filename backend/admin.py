@@ -37,11 +37,19 @@ class PlacesStandAdmin(admin.ModelAdmin):
         'id',
         'name',
     )
+
+
+class MonthsAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'user',
+        'date',
+    )
         
 
 admin.site.register(Event, EventsAdmin)
 admin.site.register(HoursResult, HoursResultAdmin)
-admin.site.register(Months)
+admin.site.register(Months, MonthsAdmin)
 admin.site.register(EventsHistory)
 admin.site.register(Calendar, CalendarAdmin)
 admin.site.register(PlacesStand, PlacesStandAdmin)

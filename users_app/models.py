@@ -70,20 +70,24 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=True,
         db_index=True
     )
-    available = models.BooleanField(
-        default=True
+    admin = models.BooleanField(
+        default=False,
     )
     service = models.BooleanField(
-        default=False
+        default=False,
+        verbose_name=('Service (microphones, music, duty)')
     )
     leader = models.BooleanField(
-        default=False
+        default=False,
+        verbose_name=('Leader')
     )
     helper = models.BooleanField(
-        default=False
+        default=False,
+        verbose_name=('Helper (lector, service, prayers)')
         )
     ministry_event = models.BooleanField(
-        default=False
+        default=False,
+        verbose_name=('Ministry (Leader of ministry meetings)')
         )
     
     created_at=models.DateTimeField(auto_now_add=True)

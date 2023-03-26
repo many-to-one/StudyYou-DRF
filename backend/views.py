@@ -350,25 +350,40 @@ def getAllCalendarDates(request):
 
 
 @api_view(['POST'])
-def setCalendar(request, pk):
+def setCalendar(request, pk, week_ago):
     user = User.objects.get(id=pk)
     data = request.data
     user.action = data['action']
     user.save()
-    calendar = Calendar.objects.create(
-        date=data['date'],
+    check_calendar = Calendar.objects.filter(
+        date=week_ago,
         action=data['action'],
-        congregation=data['congregation'],
-        groupe=data['groupe'],
-        icon=data['icon'],
-        # topic=data['topic'],
         user=user,
-        )
-    username = user.username
+    )
+    if check_calendar:
+        calendar = Calendar.objects.create(
+            date=data['date'],
+            time='user week ago', # duplicate date for iteration of sorted Timetable-list in React
+            action=data['action'],
+            congregation=data['congregation'],
+            groupe=data['groupe'],
+            icon=data['icon'],
+            user=user,
+            )
+    else:
+        calendar = Calendar.objects.create(
+            date=data['date'],
+            time=data['date'], # duplicate date for iteration of sorted Timetable-list in React
+            action=data['action'],
+            congregation=data['congregation'],
+            groupe=data['groupe'],
+            icon=data['icon'],
+            # topic=data['topic'],
+            user=user,
+            )
     serializer = CalendarSerializer(calendar, many=False)
     return Response(
         serializer.data,
-        # username,
         status=status.HTTP_200_OK,
         )  
 
@@ -400,7 +415,9 @@ def setCalendarPerson(request, pk):
         action = data['action'],
         person = data['person'],
         congregation = data['congregation'],
-        time = data['time'],
+        time = data['date'],
+        at_time = data['at_time'],
+        icon = data['icon'],
         user = user,
         )
     serializer = CalendarSerializer(calendar, many=False)
@@ -419,7 +436,9 @@ def setCalendarFromPerson(request, username):
         action = data['action'],
         person = person,
         congregation = data['congregation'],
-        time = data['time'],
+        time = data['date'],
+        at_time = data['at_time'],
+        icon = data['icon'],
         user = user,
         )
     serializer = CalendarSerializer(calendar, many=False)

@@ -192,6 +192,10 @@ class Calendar(models.Model):
         max_length=30,
         null=True,
     )
+    at_time = models.CharField(
+        max_length=30,
+        null=True,
+    )
     groupe = models.CharField(
         max_length=5,
         null=True,
