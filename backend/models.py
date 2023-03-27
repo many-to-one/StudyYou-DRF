@@ -204,6 +204,12 @@ class Calendar(models.Model):
         max_length=30,
         null=True,
     )
+    arr_icon = models.JSONField(
+        null=True,
+    )
+    check_arr_icon = models.BooleanField(
+        default=False,
+    )
     topic = models.CharField(
         max_length=26,
         null=True,

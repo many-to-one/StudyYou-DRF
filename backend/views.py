@@ -360,17 +360,52 @@ def setCalendar(request, pk, week_ago):
         action=data['action'],
         user=user,
     )
+    check_same_date = Calendar.objects.filter(
+        date=data['date'],
+        user=user
+    )
+    arr_check = []
+    for check in check_same_date:
+        arr_check.append(check.icon)
+    for check in check_calendar:
+        arr_check.append(check.icon)
     if check_calendar:
         calendar = Calendar.objects.create(
             date=data['date'],
             time='user week ago', # duplicate date for iteration of sorted Timetable-list in React
+            arr_icon=arr_check,
+            check_arr_icon=True,
             action=data['action'],
             congregation=data['congregation'],
             groupe=data['groupe'],
             icon=data['icon'],
             user=user,
             )
-    else:
+    elif check_same_date:
+        calendar = Calendar.objects.create(
+            date=data['date'],
+            time=data['date'], # duplicate date for iteration of sorted Timetable-list in React
+            arr_icon=arr_check,
+            check_arr_icon=True,
+            action=data['action'],
+            congregation=data['congregation'],
+            groupe=data['groupe'],
+            icon=data['icon'],
+            user=user,
+            )
+    elif check_calendar and check_same_date:
+        calendar = Calendar.objects.create(
+            date=data['date'],
+            time='user week ago', # duplicate date for iteration of sorted Timetable-list in React
+            arr_icon=arr_check,
+            check_arr_icon=True,
+            action=data['action'],
+            congregation=data['congregation'],
+            groupe=data['groupe'],
+            icon=data['icon'],
+            user=user,
+            )
+    elif not check_calendar and not check_same_date:
         calendar = Calendar.objects.create(
             date=data['date'],
             time=data['date'], # duplicate date for iteration of sorted Timetable-list in React
@@ -378,7 +413,6 @@ def setCalendar(request, pk, week_ago):
             congregation=data['congregation'],
             groupe=data['groupe'],
             icon=data['icon'],
-            # topic=data['topic'],
             user=user,
             )
     serializer = CalendarSerializer(calendar, many=False)
