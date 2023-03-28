@@ -355,6 +355,9 @@ def setCalendar(request, pk, week_ago):
     data = request.data
     user.action = data['action']
     user.save()
+    users = User.objects.filter(
+        groupe=data['groupe']
+    )
     check_calendar = Calendar.objects.filter(
         date=week_ago,
         action=data['action'],
@@ -404,6 +407,16 @@ def setCalendar(request, pk, week_ago):
             groupe=data['groupe'],
             icon=data['icon'],
             user=user,
+            )
+    elif data['action'] == 'Cleaning':
+        for user in users:
+            calendar = Calendar.objects.create(
+                date=data['date'],
+                time=data['date'], # duplicate date for iteration of sorted Timetable-list in React
+                action=data['action'],
+                congregation=data['congregation'],
+                groupe=data['groupe'],
+                user=user,
             )
     elif not check_calendar and not check_same_date:
         calendar = Calendar.objects.create(
