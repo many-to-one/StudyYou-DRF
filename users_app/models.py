@@ -73,6 +73,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     admin = models.BooleanField(
         default=False,
     )
+    editor = models.BooleanField(
+        default=False,
+        verbose_name=('Congregation menegment')
+    )
     service = models.BooleanField(
         default=False,
         verbose_name=('Service (microphones, music, duty)')
