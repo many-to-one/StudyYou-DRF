@@ -381,7 +381,7 @@ def setCalendar(request, pk, week_ago):
             action=data['action'],
             congregation=data['congregation'],
             groupe=data['groupe'],
-            icon=data['icon'],
+            # icon=data['icon'],
             user=user,
             )
     elif check_same_date:
@@ -416,6 +416,7 @@ def setCalendar(request, pk, week_ago):
                 action=data['action'],
                 congregation=data['congregation'],
                 groupe=data['groupe'],
+                icon=data['icon'],
                 user=user,
             )
     elif not check_calendar and not check_same_date:
