@@ -156,14 +156,19 @@ class UserView(views.APIView):
                 user.save()
             elif k == 'editor':
                 user.editor = v
+                user.save()
             elif k == 'helper':
                 user.helper = v
+                user.save()
             elif k == 'leader':
                 user.leader = v
+                user.save()
             elif k == 'ministry_event':
                 user.ministry_event = v
+                user.save()
             elif k == 'service':
                 user.service = v
+                user.save()
 
         serializer = UserSerializer(user)
         response = Response()

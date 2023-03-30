@@ -126,26 +126,17 @@ def updateEvent(request, ev_pk, user_pk):
     data = request.data
     event = Event.objects.get(
         id=ev_pk,
-        # user__id=user_pk,
         )
     serializer = EventSerializer(instance=event, data=data, partial=True)
-    # serializer = EventSerializer(event, many=False)
     if serializer.is_valid():
         serializer.save()
-    evento = Event.objects.get(id=ev_pk)
-    # serializero = EventSerializer(evento, many=False)
     response = Response()
     response.data = {
-                'data': serializer.data,
-                # 'evento': serializero.data,
-                'status': status.HTTP_205_RESET_CONTENT
-            }
+            'data': serializer.data,
+            'status': status.HTTP_205_RESET_CONTENT
+        }
     return response
 
-    return Response(
-        serializer.data,
-        status=status.HTTP_200_OK,
-    )
 
 @api_view(['DELETE'])
 def deleteEvent(request, ev_pk, user_pk):
@@ -169,8 +160,6 @@ def deleteAll(request, user_pk):
 @api_view(['GET'])
 def getResults(request, user_pk):
     events = Event.objects.filter(user__id=user_pk)
-    # result = HoursResult.objects.create() 
-    # result.save()
     result = HoursResult.objects.get(id=1)  
     for h in events:
         result.date = str(h.date)[5:7] # result.date = month_list_UA[str(h.date)[5:7]]   
@@ -182,7 +171,6 @@ def getResults(request, user_pk):
         result.visits += h.visits
         result.publications += h.publications
         result.films += h.films 
-    # result.save()
     serializer = ResultSerializer(result, many=False)
     return Response(
         serializer.data,
@@ -233,7 +221,6 @@ def getRecordedMonthResults(request, user_pk, lng, studies):
     serializer = MonthsSerializer(month_result, many=False)
     return Response(
         serializer.data,
-        # month_result.date
         )  
 
 
