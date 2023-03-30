@@ -133,6 +133,47 @@ class UserView(views.APIView):
             'token': token,
         }
         return response
+    
+    def post(self, request, pk):
+        user = User.objects.get(id=pk)
+        payload = {'id': user.id}
+        token = jwt.encode(payload, 'secret', algorithm='HS256')
+
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated!')
+
+        user = User.objects.filter(id=payload['id']).first()
+
+        data = request.data
+        for k, v in data.items():
+            if k == 'admin':
+                user.admin = v
+                user.save()
+            elif k == 'editor':
+                user.editor = v
+            elif k == 'helper':
+                user.helper = v
+            elif k == 'leader':
+                user.leader = v
+            elif k == 'ministry_event':
+                user.ministry_event = v
+            elif k == 'service':
+                user.service = v
+
+        serializer = UserSerializer(user)
+        response = Response()
+        response.data = {
+            'message': 'Success',
+            'status': status.HTTP_200_OK,
+            'data': serializer.data,
+            'token': token,
+        }
+        return response
 
 
 class AllUsers(views.APIView):
