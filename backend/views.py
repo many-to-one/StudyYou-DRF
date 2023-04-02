@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 from users_app.models import User
+from users_app.utils import Util
 from .serializers import CalendarSerializer, EventSerializer, ImageSerializer, MonthsSerializer, EventsHistorySerializer, PlacesStandSerializer, ResultSerializer
 from .models import Calendar, Event, EventsHistory, HoursResult, Image, Months, PlacesStand
 from datetime import datetime
@@ -178,13 +179,25 @@ def getResults(request, user_pk):
     )
 
 
-@api_view(['GET'])
-def getRecordedMonthResults(request, user_pk, lng, studies):
+@api_view(['POST'])
+def getRecordedMonthResults(request, user_pk, lng, studies, month):
+
+    data = request.data
+    hours_ = ''
+    minutes_ = ''
+    publications_ = ''
+    films_ = ''
+    visits_ = ''
+    studies_ = ''
+    report_ = ''
+    from_ = ''
+    regards_ = ''
+
+    user = User.objects.get(id=user_pk)
+    report_user = User.objects.get(report=True)
     month_result = Months.objects.create()
     month_result.save()
     events = Event.objects.filter(user__id=user_pk)
-    lang = f'lng_{lng}'
-    print(lang)
 
     for ev in events:
         eventsHistory = EventsHistory.objects.create(month_id=month_result.id)
@@ -193,19 +206,60 @@ def getRecordedMonthResults(request, user_pk, lng, studies):
         eventsHistory.minutes = ev.minutes
         eventsHistory.visits = ev.visits
         eventsHistory.publications = ev.publications
-        eventsHistory.films = ev.films
+        eventsHistory.films = int(data['films'])
         eventsHistory.studies = studies
         eventsHistory.user = ev.user
         eventsHistory.save()
 
         if lng == 'ENG':
-            month_result.date = str(f'{str(ev.date)[0:4]} {ENG[str(ev.date)[5:7]]}')
+            hours_ = 'Hours:'
+            minutes_ = 'Minutes:'
+            publications_ = 'Publications:'
+            films_ = 'Films:'
+            visits_ = 'Visits:'
+            studies_ = 'Studies:'
+            month_ = 'Month:'
+            report_ = 'Report:'
+            from_ = 'From:'
+            regards_ = 'Kind regards,'
+
         if lng == 'PL':
-            month_result.date = str(f'{str(ev.date)[0:4]} {PL[str(ev.date)[5:7]]}')
+            hours_ = 'Godziny:'
+            minutes_ = 'Minuty:'
+            publications_ = 'Publikacje:'
+            films_ = 'Filmy:'
+            visits_ = 'Odwiedziny:'
+            studies_ = 'Studia:'
+            month_ = 'Miesiąc:'
+            report_ = 'Owoc'
+            from_ = 'za'
+            regards_ = 'Pozdrawiam,'
+
         if lng == 'RU':
-            month_result.date = str(f'{str(ev.date)[0:4]} {RU[str(ev.date)[5:7]]}')
+            hours_ = 'Часы:'
+            minutes_ = 'Минуты:'
+            publications_ = 'Публикации:'
+            films_ = 'Фильмы:'
+            visits_ = 'Посещения:'
+            studies_ = 'Изучения:'
+            month_ = 'Месяц:'
+            report_ = 'Отчет'
+            from_ = 'за'
+            regards_ = 'С уважением'
+
         if lng == 'UA':
-            month_result.date = str(f'{str(ev.date)[0:4]} {UA[str(ev.date)[5:7]]}')
+            hours_ = 'Години:'
+            publications_ = 'Публікації:'
+            minutes_ = 'Хвилини:'
+            films_ = 'Фільми:'
+            visits_ = 'Відвідування:'
+            studies_ = 'Вивчення:'
+            month_ = 'Мiсяц:'
+            report_ = 'Звіт'
+            from_ = 'за'
+            regards_ = 'З повагою,'
+
+        month_result.date = f'{month} {str(ev.date)[0:4]}'
         month_result.hours += ev.hours
         month_result.minutes += ev.minutes
         if month_result.minutes >= 60:
@@ -213,12 +267,18 @@ def getRecordedMonthResults(request, user_pk, lng, studies):
             month_result.minutes -= 60
         month_result.visits += ev.visits
         month_result.publications += ev.publications
-        month_result.films += ev.films
+        month_result.films += int(data['films'])
         month_result.studies = studies
         month_result.user = ev.user
     month_result.save()
     events.delete()
     serializer = MonthsSerializer(month_result, many=False)
+    email_body = f'{month_} {month_result.date}\n \n {hours_} {month_result.hours}\n {minutes_} {month_result.minutes}\n {publications_} {month_result.publications} \n {visits_} {month_result.visits} \n {films_} {month_result.films} \n {studies_} {month_result.studies} \n \n {regards_} \n {user.username}'
+    data = {'email_body': email_body, 
+            'to_email': report_user.email,
+            'email_subject': f'{report_} {user.username} {from_} {month_result.date}'}
+
+    Util.send_email(data)      
     return Response(
         serializer.data,
         )  
@@ -240,11 +300,27 @@ def deleteMonthResult(request, month_pk, user_pk):
         'Events were deleted',
         status=status.HTTP_200_OK,
         )
+
+
+@api_view(['DELETE'])
+def deleteAllMonthsResults(request, user_pk):
+    history = EventsHistory.objects.filter(
+        user__id=user_pk,
+        )
+    months = Months.objects.filter(
+        user__id=user_pk
+    )
+    history.delete()
+    months.delete()
+    return Response(
+        'Events were deleted',
+        status=status.HTTP_200_OK,
+        )
     
 
 @api_view(['GET'])
 def getMonthsResults(request, user_pk):
-    results = Months.objects.filter(user__id=user_pk)
+    results = Months.objects.filter(user__id=user_pk).order_by('-id')
     events = Event.objects.filter(user__id=user_pk)
     serializer = MonthsSerializer(results, many=True)
     all_hours = 0

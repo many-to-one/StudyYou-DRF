@@ -169,6 +169,9 @@ class UserView(views.APIView):
             elif k == 'service':
                 user.service = v
                 user.save()
+            elif k == 'report':
+                user.report = v
+                user.save()
 
         serializer = UserSerializer(user)
         response = Response()

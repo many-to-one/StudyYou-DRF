@@ -93,6 +93,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=False,
         verbose_name=('Ministry (Leader of ministry meetings)')
         )
+    report = models.BooleanField(
+        default=False,
+        verbose_name=('Report')
+    )
     
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
