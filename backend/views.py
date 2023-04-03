@@ -306,12 +306,17 @@ def deleteMonthResult(request, month_pk, user_pk):
 def deleteAllMonthsResults(request, user_pk):
     history = EventsHistory.objects.filter(
         user__id=user_pk,
-        )
+        )[12:]
     months = Months.objects.filter(
         user__id=user_pk
-    )
-    history.delete()
-    months.delete()
+    )[12:]
+    EventsHistory.objects.exclude(pk__in=history).delete()
+    Months.objects.exclude(pk__in=months).delete()
+    # history.delete()
+    # months.delete()
+    print(f'################## {history} ###################')
+    print(f'################## {months} ###################')
+
     return Response(
         'Events were deleted',
         status=status.HTTP_200_OK,
@@ -320,7 +325,8 @@ def deleteAllMonthsResults(request, user_pk):
 
 @api_view(['GET'])
 def getMonthsResults(request, user_pk):
-    results = Months.objects.filter(user__id=user_pk).order_by('-id')
+    results = Months.objects.filter(user__id=user_pk)
+    bar_chart = Months.objects.filter(user__id=user_pk).order_by('-id')
     events = Event.objects.filter(user__id=user_pk)
     serializer = MonthsSerializer(results, many=True)
     all_hours = 0
@@ -335,6 +341,13 @@ def getMonthsResults(request, user_pk):
     publications = []
     films = []
     studies = []
+    for i in bar_chart:
+        months.append(i.date[:-4])
+        hours.append(i.hours)
+        visits.append(i.visits)
+        publications.append(i.publications)
+        films.append(i.films)
+        studies.append(i.studies)
     for i in results:
         all_hours += i.hours
         all_minutes += i.minutes
@@ -344,13 +357,7 @@ def getMonthsResults(request, user_pk):
         all_visits += i.visits
         all_publications += i.publications
         all_films += i.films
-        # all_studies = i.studies[0]
-        months.append(i.date[5:])
-        hours.append(i.hours)
-        visits.append(i.visits)
-        publications.append(i.publications)
-        films.append(i.films)
-        studies.append(i.studies)
+        all_studies = i.studies
     for j in events:
         all_hours += j.hours
         all_minutes += j.minutes
@@ -371,12 +378,12 @@ def getMonthsResults(request, user_pk):
         'all_publications': all_publications,
         'all_films': all_films,
         'all_studies': all_studies,
-        'months': months,
-        'hours': hours,
-        'visits': visits,
-        'publications': publications,
-        'films': films,
-        'studies': studies,
+        'months': months[:4],
+        'hours': hours[:4],
+        'visits': visits[:4],
+        'publications': publications[:4],
+        'films': films[:4],
+        'studies': studies[:4],
     }
     return response
 

@@ -87,7 +87,7 @@ class EventsHistory(models.Model):
     )
 
     def __str__(self) -> str:
-        return str(self.date)[:16]
+        return str(self.id)
 
 
 class HoursResult(models.Model):
