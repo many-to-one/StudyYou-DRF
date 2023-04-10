@@ -3,12 +3,13 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-
 from users_app.models import User
 from users_app.utils import Util
 from .serializers import CalendarSerializer, EventSerializer, ImageSerializer, MonthsSerializer, EventsHistorySerializer, PlacesStandSerializer, ResultSerializer
 from .models import Calendar, Event, EventsHistory, HoursResult, Image, Months, PlacesStand
 from datetime import datetime
+from random import sample
+import pandas as pd
 
 
 ENG = {
@@ -589,6 +590,23 @@ def setCalendarStand(request, username):
         status=status.HTTP_200_OK,
         )
 
+@api_view(['PUT'])
+def updateCalendarStand(request, pk):
+    data = request.data
+    calendar = Calendar.objects.get(id=pk)
+    calendar.user = User.objects.get(username=data['user'])
+    calendar.person = data['person']
+    calendar.save()
+    serializer = CalendarSerializer(instance=calendar, data=data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+    response = Response()
+    response.data = {
+            'data': serializer.data,
+            'status': status.HTTP_205_RESET_CONTENT
+        }
+    return response
+
 @api_view(['POST'])
 def getCalendarDatesByPerson(request):
     data = request.data
@@ -711,3 +729,116 @@ def setPlacesStand(request, congregation):
             'status': status.HTTP_404_NOT_FOUND,
         }
         return response
+
+
+@api_view(['POST', 'GET', 'DELETE']) 
+def setRandomStand(request, congregation, date, count, dw):
+    if request.method == 'POST':
+        data = request.data
+        users = User.objects.filter(
+            congregation=congregation,
+            stand=True,
+        )
+        udl = []
+        for a in users:
+            udl.append(a.id)
+        ud = sample(udl, len(udl))
+
+
+        if dw == 'Tue':
+            time = [f'{date} 10:00', f'{date} 11:00', f'{date} 12:00', f'{date} 13:00']
+            place = ['Park przy zamku']
+            for i in range(4):
+                print(f'##############{i}#############')
+                user1 = User.objects.get(id=ud[i])
+                user2 = User.objects.get(id=ud[i+2])
+                calendar = Calendar.objects.create(
+                    date = date,
+                    action = data['action'],
+                    person = user1,
+                    place = place[0],
+                    icon = data['icon'],
+                    congregation = data['congregation'],
+                    time = time[i],
+                    user = user1,
+                    )
+                calendar = Calendar.objects.create(
+                    date = date,
+                    action = data['action'],
+                    person = user2,
+                    place = place[0],
+                    icon = data['icon'],
+                    congregation = data['congregation'],
+                    time = time[i],
+                    user = user2,
+                    )
+
+
+        elif dw == 'Thu':
+            time = [f'{date} 10:00', f'{date} 11:00', f'{date} 16:00', f'{date} 17:00']
+            place = ['Skrzużowanie Centrum', 'Skrzużowanie Centrum', 'Wjazd do Galerii', 'Wjazd do Galerii']
+            for i in range(4):
+                print(f'##############{i}#############')
+                user1 = User.objects.get(id=ud[i])
+                user2 = User.objects.get(id=ud[i+2])
+                calendar = Calendar.objects.create(
+                    date = date,
+                    action = data['action'],
+                    person = user1,
+                    place = place[i],
+                    icon = data['icon'],
+                    congregation = data['congregation'],
+                    time = time[i],
+                    user = user1,
+                    )
+                calendar = Calendar.objects.create(
+                    date = date,
+                    action = data['action'],
+                    person = user2,
+                    place = place[i],
+                    icon = data['icon'],
+                    congregation = data['congregation'],
+                    time = time[i],
+                    user = user2,
+                    )
+
+
+        elif dw == 'Fri':
+            time = [f'{date} 10:00', f'{date} 11:00', f'{date} 16:00', f'{date} 17:00']
+            place = ['Park przy zamku', 'Park przy zamku', 'Wjazd do Galerii', 'Wjazd do Galerii']
+            for i in range(4):
+                print(f'##############{i}#############')
+                user1 = User.objects.get(id=ud[i])
+                user2 = User.objects.get(id=ud[i+2])
+                calendar = Calendar.objects.create(
+                    date = date,
+                    action = data['action'],
+                    person = user1,
+                    place = place[i],
+                    icon = data['icon'],
+                    congregation = data['congregation'],
+                    time = time[i],
+                    user = user1,
+                    )
+                calendar = Calendar.objects.create(
+                    date = date,
+                    action = data['action'],
+                    person = user2,
+                    place = place[i],
+                    icon = data['icon'],
+                    congregation = data['congregation'],
+                    time = time[i],
+                    user = user2,
+                    )
+                
+
+        else:
+            return Response(
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    serializer = CalendarSerializer(calendar, many=False)
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK,
+        )

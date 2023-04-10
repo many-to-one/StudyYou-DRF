@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from .views_random_stand import *
 
 urlpatterns = [
     path('events/<str:pk>/', getEvents, name='events'),
@@ -20,6 +21,7 @@ urlpatterns = [
     path('set_calendar_person/<str:pk>/', setCalendarPerson, name='set_calendar_person'),
     path('set_calendar_from_person/<str:username>/', setCalendarFromPerson, name='set_calendar_from_person'),
     path('set_calendar_stand/<str:username>/', setCalendarStand, name='set_calendar_stand'),
+    path('update_calendar_stand/<str:pk>/', updateCalendarStand, name='update_calendar_stand'),
     path('get_calendar/', getAllCalendarDates, name='get_calendars'),
     path('get_calendar_date/', getCalendarDatesByDate, name='get_calendar_date'),
     path('get_calendar_person/', getCalendarDatesByPerson, name='get_calendar_person'),
@@ -28,4 +30,7 @@ urlpatterns = [
     path('set_calendar_speach/', setCalendarSpeach, name='set_calendar_speach'),
     path('set_calendar_speach_from_list/<str:pk>/', setCalendarSpeachFromList, name='set_calendar_speach_from_list'),
     path('set_places_stand/<str:congregation>/', setPlacesStand, name='set_places_stand'),
+    path('set_random_stand/<str:congregation>/<str:date>/<int:count>/<dw>/', setRandomStand, name='set_random_stand'),
+    path('set_random_stand_big/', setRandomStandBig, name='set_random_stand_big'),
+    path('get_random_stand_big/<str:congregation>/', getRandomStandBig, name='get_random_stand_big'),
 ]

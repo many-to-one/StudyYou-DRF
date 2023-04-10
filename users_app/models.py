@@ -97,6 +97,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=False,
         verbose_name=('Report')
     )
+    stand = models.BooleanField(
+        default=False,
+        verbose_name=('Ministry with Stand')
+    )
     
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)

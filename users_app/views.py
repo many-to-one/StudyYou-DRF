@@ -151,7 +151,10 @@ class UserView(views.APIView):
 
         data = request.data
         for k, v in data.items():
-            if k == 'admin':
+            if k == 'stand':
+                user.stand = v
+                user.save()
+            elif k == 'admin':
                 user.admin = v
                 user.save()
             elif k == 'editor':
