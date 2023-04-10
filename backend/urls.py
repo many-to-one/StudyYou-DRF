@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import *
 from .views_random_stand import *
+from .views_random_service import *
 
 urlpatterns = [
     path('events/<str:pk>/', getEvents, name='events'),
@@ -30,7 +31,7 @@ urlpatterns = [
     path('set_calendar_speach/', setCalendarSpeach, name='set_calendar_speach'),
     path('set_calendar_speach_from_list/<str:pk>/', setCalendarSpeachFromList, name='set_calendar_speach_from_list'),
     path('set_places_stand/<str:congregation>/', setPlacesStand, name='set_places_stand'),
-    path('set_random_stand/<str:congregation>/<str:date>/<int:count>/<dw>/', setRandomStand, name='set_random_stand'),
     path('set_random_stand_big/', setRandomStandBig, name='set_random_stand_big'),
     path('get_random_stand_big/<str:congregation>/', getRandomStandBig, name='get_random_stand_big'),
+    path('set_random_service/', setRandomService, name='set_random_service'),
 ]

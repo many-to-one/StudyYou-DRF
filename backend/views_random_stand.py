@@ -15,6 +15,8 @@ def setRandomStandBig(request):
         users = User.objects.filter(
             congregation=data['congregation'],
             stand=True,
+        ).exclude(
+            groupe=4,
         )
         udl = []
         for a in users:
@@ -327,7 +329,7 @@ def setRandomStandBig(request):
                     icon = data['icon'],
                     congregation = data['congregation'],
                     time = time_Sat[1],
-                    user = User.objects.get(username=ud[26]),
+                    user = User.objects.get(username=ud[5]),
                     )
     calendar = Calendar.objects.create(
                     date = date[3],
