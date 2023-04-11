@@ -30,7 +30,6 @@ def setRandomService(request):
 
         dates = data['date']
         dates += '.'
-        print(f'############{dates}##############')
         date = []
         di = ''
         count = 0

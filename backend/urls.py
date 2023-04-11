@@ -2,6 +2,7 @@ from django.urls import path
 from .views import *
 from .views_random_stand import *
 from .views_random_service import *
+from .views_random_ministry import *
 
 urlpatterns = [
     path('events/<str:pk>/', getEvents, name='events'),
@@ -34,4 +35,5 @@ urlpatterns = [
     path('set_random_stand_big/', setRandomStandBig, name='set_random_stand_big'),
     path('get_random_stand_big/<str:congregation>/', getRandomStandBig, name='get_random_stand_big'),
     path('set_random_service/', setRandomService, name='set_random_service'),
+    path('set_random_ministry/', setRandomMinistry, name='set_random_ministry'),
 ]

@@ -16,7 +16,7 @@ def setRandomStandBig(request):
             congregation=data['congregation'],
             stand=True,
         ).exclude(
-            groupe=4,
+            groupe=1,
         )
         udl = []
         for a in users:
@@ -324,7 +324,7 @@ def setRandomStandBig(request):
     calendar = Calendar.objects.create(
                     date = date[3],
                     action = data['action'],
-                    person = ud[26],
+                    person = ud[5],
                     place = place[1],
                     icon = data['icon'],
                     congregation = data['congregation'],
@@ -388,24 +388,29 @@ def setRandomStandBig(request):
         status=status.HTTP_200_OK,
         )
 
-from fpdf import FPDF
-import os
+# from fpdf import FPDF
+# import os
 @api_view(['GET']) 
 def getRandomStandBig(request, congregation): 
     stands = Calendar.objects.filter(
         congregation=congregation,
         action='Stand',
     )
+    serializer = CalendarSerializer(stands, many=True)
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK,
+        )
 
-    filename = 'Owoc.txt'
-    dir_path = r'D:\IT\ework\Owoc'
-    path = os.path.join(dir_path, filename) 
-    with open(path, 'w') as f:
-        for stand in stands:
-            f.write(stand.person)
-            f.write(' === ')
-            f.write(stand.time)
-            f.write('\n')
+    # filename = 'Owoc.txt'
+    # dir_path = r'D:\IT\ework\Owoc'
+    # path = os.path.join(dir_path, filename) 
+    # with open(path, 'w') as f:
+    #     for stand in stands:
+    #         f.write(stand.person)
+    #         f.write(' === ')
+    #         f.write(stand.time)
+    #         f.write('\n')
 
     # import csv
     # data = []
@@ -443,8 +448,3 @@ def getRandomStandBig(request, congregation):
     # path = os.path.join(parent_dir, directory) 
     # os.makedirs(path)
     # pdf.output(f'parent_dir/example.pdf', 'F')
-    serializer = CalendarSerializer(stands, many=True)
-    return Response(
-        serializer.data,
-        status=status.HTTP_200_OK,
-        )
