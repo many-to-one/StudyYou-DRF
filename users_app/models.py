@@ -87,7 +87,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     helper = models.BooleanField(
         default=False,
-        verbose_name=('Helper (lector, service, prayers)')
+        verbose_name=('Helper (service, prayers)')
+        )
+    lector = models.BooleanField(
+        default=False,
+        )
+    school_leader = models.BooleanField(
+        default=False,
         )
     ministry_event = models.BooleanField(
         default=False,
