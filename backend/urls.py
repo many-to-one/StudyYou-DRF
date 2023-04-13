@@ -4,6 +4,7 @@ from .views_random_stand import *
 from .views_random_service import *
 from .views_random_ministry import *
 from .views_random_week import *
+from .views_random_weekend import *
 
 urlpatterns = [
     path('events/<str:pk>/', getEvents, name='events'),
@@ -37,5 +38,6 @@ urlpatterns = [
     path('get_random_stand_big/<str:congregation>/', getRandomStandBig, name='get_random_stand_big'),
     path('set_random_service/', setRandomService, name='set_random_service'),
     path('set_random_ministry/', setRandomMinistry, name='set_random_ministry'),
-    path('set_random_weeks/', setRandomWeek, name='set_random_week'),
+    path('set_random_week/', setRandomWeek, name='set_random_week'),
+    path('set_random_weekend/', setRandomWeekend, name='set_random_weekend'),
 ]

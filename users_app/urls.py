@@ -19,5 +19,6 @@ urlpatterns = [
     path('users_by_helper/<congregation>/', AllUsersByHelper.as_view(), name='users_by_helper'),
     path('users_by_ministry/<congregation>/', AllUsersByMinistry.as_view(), name='users_by_ministry'),
     path('users_by_groupe/<congregation>/<groupe>/', AllUsersByGroupe.as_view(), name='users_by_groupe'),
+    path('users_by_lector/<congregation>/', AllUsersByLector.as_view(), name='users_by_lector'),
     path('set_user_groupe/<pk>/', SetGroupeView.as_view(), name='set_user_groupe'),
 ]

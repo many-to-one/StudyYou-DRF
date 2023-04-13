@@ -267,6 +267,20 @@ class AllUsersByGroupe(views.APIView):
             serializer.data,
             status=status.HTTP_200_OK,
         )
+    
+
+class AllUsersByLector(views.APIView):
+
+    def get(self, request, congregation):
+        users = User.objects.filter(
+            congregation=congregation,
+            lector=True,
+            )
+        serializer = UserSerializer(users, many=True)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
 
 
 class RequestPasswordResetEmail(generics.GenericAPIView):
