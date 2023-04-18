@@ -166,6 +166,9 @@ class UserView(views.APIView):
             elif k == 'leader':
                 user.leader = v
                 user.save()
+            elif k == 'lector':
+                user.lector = v
+                user.save()
             elif k == 'ministry_event':
                 user.ministry_event = v
                 user.save()

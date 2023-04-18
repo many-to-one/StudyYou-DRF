@@ -86,46 +86,46 @@ def setRandomStandBig(request):
                     time = time_Tue[1],
                     user = User.objects.get(username=ud[3]),
                     )
-    calendar = Calendar.objects.create(
-                    date = date[0],
-                    action = data['action'],
-                    person = ud[4],
-                    place = place[0],
-                    icon = data['icon'],
-                    congregation = data['congregation'],
-                    time = time_Tue[2],
-                    user = User.objects.get(username=ud[4]),
-                    )
-    calendar = Calendar.objects.create(
-                    date = date[0],
-                    action = data['action'],
-                    person = ud[5],
-                    place = place[0],
-                    icon = data['icon'],
-                    congregation = data['congregation'],
-                    time = time_Tue[2],
-                    user = User.objects.get(username=ud[5]),
-                    )
-    calendar = Calendar.objects.create(
-                    date = date[0],
-                    action = data['action'],
-                    person = ud[6],
-                    place = place[0],
-                    icon = data['icon'],
-                    congregation = data['congregation'],
-                    time = time_Tue[3],
-                    user = User.objects.get(username=ud[6]),
-                    )
-    calendar = Calendar.objects.create(
-                    date = date[0],
-                    action = data['action'],
-                    person = ud[7],
-                    place = place[0],
-                    icon = data['icon'],
-                    congregation = data['congregation'],
-                    time = time_Tue[3],
-                    user = User.objects.get(username=ud[7]),
-                    )
+    # calendar = Calendar.objects.create(
+    #                 date = date[0],
+    #                 action = data['action'],
+    #                 person = ud[4],
+    #                 place = place[0],
+    #                 icon = data['icon'],
+    #                 congregation = data['congregation'],
+    #                 time = time_Tue[2],
+    #                 user = User.objects.get(username=ud[4]),
+    #                 )
+    # calendar = Calendar.objects.create(
+    #                 date = date[0],
+    #                 action = data['action'],
+    #                 person = ud[5],
+    #                 place = place[0],
+    #                 icon = data['icon'],
+    #                 congregation = data['congregation'],
+    #                 time = time_Tue[2],
+    #                 user = User.objects.get(username=ud[5]),
+    #                 )
+    # calendar = Calendar.objects.create(
+    #                 date = date[0],
+    #                 action = data['action'],
+    #                 person = ud[6],
+    #                 place = place[0],
+    #                 icon = data['icon'],
+    #                 congregation = data['congregation'],
+    #                 time = time_Tue[3],
+    #                 user = User.objects.get(username=ud[6]),
+    #                 )
+    # calendar = Calendar.objects.create(
+    #                 date = date[0],
+    #                 action = data['action'],
+    #                 person = ud[7],
+    #                 place = place[0],
+    #                 icon = data['icon'],
+    #                 congregation = data['congregation'],
+    #                 time = time_Tue[3],
+    #                 user = User.objects.get(username=ud[7]),
+    #                 )
     
     ##############################################################
     ####################### Thursday #############################
