@@ -11,7 +11,7 @@ from django.urls import reverse
 import jwt
 from django.conf import settings
 from django.utils.encoding import smart_str, smart_bytes, DjangoUnicodeDecodeError
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode 
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from rest_framework.decorators import api_view
@@ -23,6 +23,11 @@ class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
 
     def post(self, request):
+        #Emails for check users in different congregations:
+        check_mails = {
+            'Sława':'xllxlex@gmail.com',
+            'Opole':'emaskihurt@gmail.com',
+        }
         user = request.data
         # Send data to our RegisterSerializer
         serializer = self.serializer_class(data=user)
@@ -37,11 +42,15 @@ class RegisterView(generics.GenericAPIView):
         absurl = 'http://'+current_site+relativeLink+"?token="+str(token)
         email_body = 'Hi '+user.username + \
             ' Use the link below to verify your email \n' + absurl
+        email_check_body = 'Check: ' + user.username + '\n' + user.email
         data = {'email_body': email_body, 'to_email': user.email,
                 'email_subject': 'Verify your email'}
+        data2 = {'email_body': email_check_body, 'to_email': check_mails[user.congregation],
+                'email_subject': 'Verify new user'}
 
         Util.send_email(data)
-        return Response(user_data, status=status.HTTP_201_CREATED)        
+        Util.send_email(data2)
+        return Response(user_data, status=status.HTTP_201_CREATED)
 
 
 class VerifyEmail(views.APIView):
@@ -60,7 +69,7 @@ class VerifyEmail(views.APIView):
                 user.is_verified = True
                 user.save()
             if not user:
-                return Response({'error': 'No user'}, status=status.HTTP_400_BAD_REQUEST)    
+                return Response({'error': 'No user'}, status=status.HTTP_400_BAD_REQUEST)
             return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
         except jwt.ExpiredSignatureError as identifier:
             return Response({'error': 'Activation Expired'}, status=status.HTTP_400_BAD_REQUEST)
@@ -76,6 +85,7 @@ class LoginApiView(views.APIView):
 
         user = User.objects.filter(
             email=email,
+            is_verified=True,
             # congregation=congregation,
             ).first()
         user.is_active = True
@@ -93,7 +103,7 @@ class LoginApiView(views.APIView):
             'iat': datetime.datetime.utcnow()
         }
 
-        token = jwt.encode(payload, 'secret', algorithm='HS256') 
+        token = jwt.encode(payload, 'secret', algorithm='HS256')
 
         response = Response()
 
@@ -106,7 +116,7 @@ class LoginApiView(views.APIView):
             'congregation': user.congregation,
         }
         return response
-       
+
 
 class UserView(views.APIView):
 
@@ -133,7 +143,7 @@ class UserView(views.APIView):
             'token': token,
         }
         return response
-    
+
     def post(self, request, pk):
         user = User.objects.get(id=pk)
         payload = {'id': user.id}
@@ -190,6 +200,20 @@ class UserView(views.APIView):
         return response
 
 
+class DeleteUser(views.APIView):
+
+    def delete(self, request, pk, format=None):
+        user = User.objects.get(id=pk)
+        user.delete()
+        # serializer = UserSerializer(user)
+        response = Response()
+        response.data = {
+            'message': 'Deleted',
+            'status': status.HTTP_204_NO_CONTENT,
+        }
+        return response
+
+
 class AllUsers(views.APIView):
 
     def get(self, request, congregation):
@@ -199,7 +223,7 @@ class AllUsers(views.APIView):
             serializer.data,
             status=status.HTTP_200_OK,
         )
-    
+
 
 class AllUsersByService(views.APIView):
 
@@ -213,7 +237,7 @@ class AllUsersByService(views.APIView):
             serializer.data,
             status=status.HTTP_200_OK,
         )
-    
+
 
 class AllUsersByLeader(views.APIView):
 
@@ -227,8 +251,8 @@ class AllUsersByLeader(views.APIView):
             serializer.data,
             status=status.HTTP_200_OK,
         )
-    
-    
+
+
 # Duties
 class AllUsersByHelper(views.APIView):
 
@@ -242,7 +266,7 @@ class AllUsersByHelper(views.APIView):
             serializer.data,
             status=status.HTTP_200_OK,
         )
-    
+
 
 class AllUsersByMinistry(views.APIView):
 
@@ -270,7 +294,7 @@ class AllUsersByGroupe(views.APIView):
             serializer.data,
             status=status.HTTP_200_OK,
         )
-    
+
 
 class AllUsersByLector(views.APIView):
 
@@ -299,19 +323,20 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
 
-            current_site = "http://localhost:3000" # get_current_site(request=request).domain
+            current_site = "https://alextkalia.pythonanywhere.com/" # get_current_site(request=request).domain
             email_body = 'Hello, \n Use link below to reset your password  \n' + \
-                f"http://127.0.0.1:8000/users/mapp/password-reset-complete/{user.id}/" # absurl+"?redirect_url="+redirect_url
+                f"https://alextkalia.pythonanywhere.com/users/mapp/password-reset-complete/{user.id}/" # absurl+"?redirect_url="+redirect_url
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Reset your passsword'}
             Util.send_email(data)
+
         return Response(
-            {   
+            {
                 'success': 'We have sent you a link to reset your password',
                 'token' : token,
                 'uidb64': uidb64,
                 'reletive_link' : reverse('password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token}),
-            }, 
+            },
             status=status.HTTP_200_OK,
         )
 
@@ -337,11 +362,11 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
             )
         except DjangoUnicodeDecodeError():
             if not PasswordResetTokenGenerator().check_token(user):
-                return Response('The user is not valid, please request a new one')   
+                return Response('The user is not valid, please request a new one')
 
 
 class SetNewPasswordAPIView(generics.GenericAPIView):
-    serializer_class = SetNewPasswordSerializer   
+    serializer_class = SetNewPasswordSerializer
 
     def patch(self, request):
         try:
@@ -355,7 +380,7 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
                 'message': 'Password reseted successfully!'
             },
             status=status.HTTP_200_OK,
-        )  
+        )
 
 
 # class LogoutView(views.APIView):
@@ -380,7 +405,7 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
 #             return response
 
 #         except TokenError:
-#             raise('Bad token')   
+#             raise('Bad token')
 
 
 class LogoutView(views.APIView):
@@ -402,8 +427,8 @@ class LogoutView(views.APIView):
             }
             return response
         except TokenError:
-            raise('Bad token')  
-        
+            raise('Bad token')
+
 
 class SetGroupeView(views.APIView):
 
@@ -413,7 +438,7 @@ class SetGroupeView(views.APIView):
         user.groupe = data
         user.save()
         serializer = UserSerializer(
-            user, 
+            user,
             many = False,
         )
         try:
@@ -436,7 +461,7 @@ def password_change(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, "Your password has been changed")
-            return redirect('http://127.0.0.1:8000/users/success/')
+            return redirect('https://alextkalia.pythonanywhere.com/users/success/')
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
